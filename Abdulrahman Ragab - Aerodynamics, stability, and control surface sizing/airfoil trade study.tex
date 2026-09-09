@@ -1,0 +1,85 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\begin{document}
+
+\section*{Airfoil Selection Trade Study}
+
+\subsection*{1. Methodology \& Formulation}
+To determine the optimal airfoil among \textbf{E423}, \textbf{GOE165}, and \textbf{S1223} at a Reynolds number $Re = 200,000$, a Weighted Decision Matrix was implemented. Each aerodynamic parameter $i$ is assigned a weight $W_i$ based on mission priorities such that:
+\begin{equation}
+    \sum_{i=1}^{n} W_i = 1.00
+\end{equation}
+
+Each airfoil $j$ receives a discrete score $s_{ij} \in \{-1, 0, 1\}$ representing worst, average/baseline, and best performance, respectively. The total score $S_j$ for airfoil $j$ is calculated as:
+\begin{equation}
+    S_j = \sum_{i=1}^{n} \left( W_i \cdot s_{ij} \right)
+\end{equation}
+
+\subsection*{2. Extracted Aerodynamic Parameters}
+The baseline aerodynamic polar data calculated via XFLR5 ($Re = 200,000$) is summarized in Table~\ref{tab:extracted_data}.
+
+\begin{table}[h!]
+\centering
+\caption{Extracted Aerodynamic Data ($Re = 200,000$)}
+\label{tab:extracted_data}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Airfoil} & \textbf{$C_{L,\max}$} & \textbf{$C_{D,\min}$} & \textbf{$(L/D)_{\max}$} & \textbf{$C_{m0}$ ($\alpha=0^\circ$)} & \textbf{$\alpha_{\text{stall}}$} \\
+\midrule
+E423   & 2.0338 & 0.01898 & 75.33 & -0.2451 & $13.0^\circ$ \\
+GOE165 & 1.5447 & 0.01313 & 60.91 & -0.1587 & $11.5^\circ$ \\
+S1223  & 2.2314 & 0.01778 & 71.81 & -0.2716 & $13.0^\circ$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{3. Weight Distribution \& Evaluation Criteria}
+\begin{itemize}
+    \item \textbf{Maximum Lift Coefficient ($C_{L,\max}$, $W_1 = 0.35$):} Critical for payload capacity and take-off performance. Higher is better.
+    \item \textbf{Maximum Lift-to-Drag Ratio ($(L/D)_{\max}$, $W_2 = 0.25$):} Defines aerodynamic efficiency and endurance. Higher is better.
+    \item \textbf{Minimum Drag Coefficient ($C_{D,\min}$, $W_3 = 0.20$):} Minimizes parasitic drag during dash/cruise. Lower is better.
+    \item \textbf{Zero-Lift Pitching Moment ($C_{m0}$, $W_4 = 0.20$):} Affects longitudinal stability and trim drag. Less negative is better.
+\end{itemize}
+
+\subsection*{4. Trade Study Decision Matrix}
+Table~\ref{tab:trade_matrix} presents the raw ratings, assigned weights, and weighted score calculations.
+
+\begin{table}[h!]
+\centering
+\caption{Airfoil Trade Study Matrix}
+\label{tab:trade_matrix}
+\begin{tabular}{lccccccr}
+\toprule
+\multirow{2}{*}{\textbf{Parameter}} & \multirow{2}{*}{\textbf{Weight ($W_i$)}} & \multicolumn{3}{c}{\textbf{Scores ($s_{ij}$)}} & \multicolumn{3}{c}{\textbf{Weighted Scores ($W_i \cdot s_{ij}$)}} \\
+\cmidrule(lr){3-5} \cmidrule(lr){6-8}
+& & \textbf{E423} & \textbf{GOE165} & \textbf{S1223} & \textbf{E423} & \textbf{GOE165} & \textbf{S1223} \\
+\midrule
+$C_{L,\max}$   & 0.35 & 0  & -1 & +1 & 0.00  & -0.35 & 0.35 \\
+$C_{D,\min}$   & 0.20 & -1 & +1 & 0  & -0.20 & 0.20  & 0.00 \\
+$(L/D)_{\max}$ & 0.25 & +1 & -1 & 0  & 0.25  & -0.25 & 0.00 \\
+$C_{m0}$       & 0.20 & 0  & +1 & -1 & 0.00  & 0.20  & -0.20 \\
+\midrule
+\textbf{Total Score ($S_j$)} & \textbf{1.00} & -- & -- & -- & \textbf{+0.05} & \textbf{-0.20} & \textbf{+0.15} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{5. Detailed Mathematical Calculations}
+The final weighted total scores are computed explicitly as follows:
+
+\begin{align}
+    S_{\text{E423}}   &= (0.35 \times 0) + (0.20 \times -1) + (0.25 \times 1) + (0.20 \times 0) = \mathbf{+0.05} \\
+    S_{\text{GOE165}} &= (0.35 \times -1) + (0.20 \times 1) + (0.25 \times -1) + (0.20 \times 1) = \mathbf{-0.20} \\
+    S_{\text{S1223}}  &= (0.35 \times 1) + (0.20 \times 0) + (0.25 \times 0) + (0.20 \times -1) = \mathbf{+0.15}
+\end{align}
+
+\subsection*{6. Selection Conclusion}
+According to the trade study results, \textbf{S1223} obtains the highest total score ($S = +0.15$) and is recommended as the optimal choice due to its high lift capability ($C_{L,\max} = 2.2314$).
+
+\end{document}
