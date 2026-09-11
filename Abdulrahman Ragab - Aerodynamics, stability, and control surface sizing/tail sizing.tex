@@ -83,9 +83,9 @@ Structural Weight & 20\% & 0 & 2 & 1 & -1 \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
-% قم بتعديل مسار وصيغة اسم الصورة هنا بما يتناسب مع ملفك
+
 \includegraphics[width=0.9\textwidth]{Cm-alpha graph for HT.png}
 \caption{Cm-$\alpha$ graph for Horizontal Tail ($0.4$ ,$0.6T$, $0.8T$, $1.0T$)}
 \label{fig:wing_graphs}
@@ -93,6 +93,69 @@ Structural Weight & 20\% & 0 & 2 & 1 & -1 \\
 
 Based on the trade study, the \textbf{$\lambda= 0.6$ Variant} achieved the highest weighted score (4.60), successfully balancing optimal trim angle, superior aerodynamic efficiency, and ideal root-to-tip mass distribution.
 
+
+\section{Vertical Tail Aspect Ratio (AR) Trade Study}
+To determine the optimal aspect ratio ($AR$) for the vertical tail, a weighted trade study was conducted evaluating five distinct aspect ratios ($AR = 1.3, 1.5, 1.7, 1.9,$ and $2.1$) with a fixed surface area and a tail arm length of $L_{opt} = 0.311\,\text{m}$ at $V = 20.0\,\text{m/s}$ using VLM2. 
+
+Each configuration was evaluated and scored on a relative scale from $-2$ (worst performance / severe oscillations) to $+2$ (best performance / ideal linear response) across core stability criteria:
+\begin{itemize}
+    \item \textbf{Directional Stability Slope ($C_{n\beta}$ linearity, Weight: 40\%):} Evaluates the magnitude and linearity of the yaw restoring moment gradient to ensure proper weathercock stability.
+    \item \textbf{Rolling-Yaw Coupling ($C_{l\beta}$ smoothness, Weight: 30\%):} Measures unwanted side-slip rolling moment oscillations around zero slip.
+    \item \textbf{Structural Rigidity \& Flutter Margin (Weight: 30\%):} Assesses aspect ratio impacts on structural stiffness and root bending stress.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\caption{Vertical Tail Aspect Ratio Trade Study Matrix (-2 to +2 Scale)}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Evaluation Criteria} & \textbf{Weight} & \textbf{AR = 1.3} & \textbf{AR = 1.5} & \textbf{AR = 1.7} & \textbf{AR = 1.9} & \textbf{AR = 2.1} \\
+\midrule
+Directional Stability ($C_{n\beta}$) & 40\% & -1 & \textbf{+2} & +1 & +1 & -1 \\
+Rolling-Yaw Coupling ($C_{l\beta}$) & 30\% & -1 & \textbf{+2} & 0 & -1 & -2 \\
+Structural Rigidity & 30\% & +2 & \textbf{+1} & 0 & -1 & -2 \\
+\midrule
+\textbf{Weighted Total Score} & \textbf{100\%} & \textbf{-0.10} & \textbf{+1.70} & \textbf{+0.30} & \textbf{-0.20} & \textbf{-1.50} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ARvt graphs/1.3.png}
+        \caption{AR = 1.3 Graph}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ARvt graphs/1.5.png}
+        \caption{AR = 1.5 Graph}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ARvt graphs/1.7.png}
+        \caption{AR = 1.7 Graph}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ARvt graphs/1.9.png}
+        \caption{AR = 1.9 Graph}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{ARvt graphs/2.1.png}
+        \caption{AR = 2.1 Graph}
+    \end{minipage}
+\end{figure}
+
+\subsection{Selection Conclusion}
+Based on the XFLR5 graphical results, the **$AR = 1.5$** configuration achieves the highest total score ($+1.70$). It demonstrates a clean, smooth, linear positive slope in $C_{n\beta}$ without the severe instabilities and high-frequency oscillations observed at higher or lower aspect ratios. Consequently, $AR = 1.5$ is selected as the optimal vertical tail aspect ratio before proceeding to the taper ratio optimization.
 
 
 \end{document}
