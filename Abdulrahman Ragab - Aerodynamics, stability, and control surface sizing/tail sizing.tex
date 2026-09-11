@@ -97,6 +97,33 @@ Based on the trade study, the \textbf{$\lambda= 0.6$ Variant} achieved the highe
 \section{Vertical Tail Aspect Ratio (AR) Trade Study}
 To determine the optimal aspect ratio ($AR$) for the vertical tail, a weighted trade study was conducted evaluating five distinct aspect ratios ($AR = 1.3, 1.5, 1.7, 1.9,$ and $2.1$) with a fixed surface area and a tail arm length of $L_{opt} = 0.311\,\text{m}$ at $V = 20.0\,\text{m/s}$ using VLM2. 
 
+\subsection{Vertical Tail Sizing \& Numerical Derivation}
+Using the vertical tail volume coefficient relation alongside the main wing and fuselage geometry, the physical dimensions of the vertical tail are calculated explicitly:
+
+\begin{itemize}
+    \item \textbf{Vertical Tail Area ($S_{VT}$):} 
+    \begin{equation}
+        S_{VT} = \frac{V_{VT} \cdot S_w \cdot b_w}{L_{opt}} = \frac{0.04 \times 0.08\,\text{m}^2 \times 0.63\,\text{m}}{0.311\,\text{m}} \approx 0.00648\,\text{m}^2
+    \end{equation}
+    
+    \item \textbf{Vertical Tail Span ($b_{VT}$):} Derived using the selected optimal aspect ratio:
+    \begin{equation}
+        b_{VT} = \sqrt{AR \cdot S_{VT}}
+    \end{equation}
+    
+    \item \textbf{Root Chord ($C_{r, VT}$):} Determined using the initial taper ratio ($\lambda = 0.6$):
+    \begin{equation}
+        S_{VT} = \frac{b_{VT}}{2} (1 + \lambda) C_{r, VT} \implies C_{r, VT} = \frac{2 \cdot S_{VT}}{b_{VT} (1 + \lambda)}
+    \end{equation}
+    
+    \item \textbf{Tip Chord ($C_{t, VT}$):} 
+    \begin{equation}
+        C_{t, VT} = C_{r, VT} \cdot \lambda
+    \end{equation}
+\end{itemize}
+
+\subsection{Trade study}
+
 Each configuration was evaluated and scored on a relative scale from $-2$ (worst performance / severe oscillations) to $+2$ (best performance / ideal linear response) across core stability criteria:
 \begin{itemize}
     \item \textbf{Directional Stability Slope ($C_{n\beta}$ linearity, Weight: 40\%):} Evaluates the magnitude and linearity of the yaw restoring moment gradient to ensure proper weathercock stability.
@@ -156,6 +183,14 @@ Structural Rigidity & 30\% & +2 & \textbf{+1} & 0 & -1 & -2 \\
 
 \subsection{Selection Conclusion}
 Based on the XFLR5 graphical results, the **$AR = 1.5$** configuration achieves the highest total score ($+1.70$). It demonstrates a clean, smooth, linear positive slope in $C_{n\beta}$ without the severe instabilities and high-frequency oscillations observed at higher or lower aspect ratios. Consequently, $AR = 1.5$ is selected as the optimal vertical tail aspect ratio before proceeding to the taper ratio optimization.
+
+\textbf{Selected Parameters:}
+
+\begin{itemize}
+    \item AR = 1.5
+    \item $b_{VT} = 0.099 m$
+    \item $S_{VT} = 6.48*10^{-3} m^2$
+\end{itemize}
 
 
 \end{document}
