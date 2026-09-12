@@ -192,5 +192,63 @@ Based on the XFLR5 graphical results, the **$AR = 1.5$** configuration achieves 
     \item $S_{VT} = 6.48*10^{-3} m^2$
 \end{itemize}
 
+\section{Vertical Tail Taper Ratio Trade Study}
+To finalize the vertical tail geometry, a trade study was performed evaluating four distinct taper ratios ($\lambda = 0.4, 0.6, 0.8,$ and $1.0$) at $V = 20.0\,\text{m/s}$ using VLM2, keeping the fixed aspect ratio $AR = 1.5$ and surface area $S_{VT} = 0.006535\,\text{m}^2$.
+
+Each configuration was rated on a $-2$ to $+2$ scale across key directional and structural criteria:
+\begin{itemize}
+    \item \textbf{Directional Stability Gradient ($C_{n\beta}$ linearity, Weight: 40\%):} Evaluates the smoothness and strength of the yaw restoring moment response.
+    \item \textbf{Rolling-Yaw Coupling Control ($C_{l\beta}$, Weight: 30\%):} Measures unwanted side-slip rolling moment fluctuations around zero.
+    \item \textbf{Tip Stall Margin \& Aerodynamic Efficiency (Weight: 20\%):} Assesses taper benefits on induced drag and tip flow separation.
+    \item \textbf{Structural Weight \& Root Bending Stress (Weight: 10\%):} Evaluates mass distribution and structural efficiency.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\caption{Vertical Tail Taper Ratio Trade Study Matrix (-2 to +2 Scale)}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Evaluation Criteria} & \textbf{Weight} & \textbf{0.4T} & \textbf{0.6T} & \textbf{0.8T} & \textbf{1.0T} \\
+\midrule
+Directional Stability ($C_{n\beta}$) & 40\% & -1 & \textbf{+2} & +1 & 0 \\
+Rolling-Yaw Coupling ($C_{l\beta}$) & 30\% & -1 & \textbf{+2} & 0 & -1 \\
+Aerodynamic Efficiency & 20\% & 0 & \textbf{+2} & +1 & -1 \\
+Structural Weight & 10\% & +1 & \textbf{+1} & 0 & -1 \\
+\midrule
+\textbf{Weighted Total Score} & \textbf{100\%} & \textbf{-0.70} & \textbf{+2.00} & \textbf{+0.60} & \textbf{-0.50} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{TRvt graphs/0.4.png}
+        \caption{$\lambda = 0.4$ Graph}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{TRvt graphs/0.6.png}
+        \caption{$\lambda = 0.6$ Graph}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{TRvt graphs/0.8.png}
+        \caption{$\lambda = 0.8$ Graph}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{TRvt graphs/1.png}
+        \caption{$\lambda = 1$ Graph}
+    \end{minipage}
+\end{figure}
+
+\subsection{Selection Conclusion}
+The **0.6 Taper Ratio** configuration achieves the maximum total weighted score ($+2.00$). XFLR5 simulation graphs confirm that the 0.6T variant provides the cleanest, most linear positive $C_{n\beta}$ slope and well-controlled side-slip rolling moments without high-frequency instabilities. Therefore, $\lambda = 0.6$ is conclusively selected as the final taper ratio for the vertical tail.
 
 \end{document}
