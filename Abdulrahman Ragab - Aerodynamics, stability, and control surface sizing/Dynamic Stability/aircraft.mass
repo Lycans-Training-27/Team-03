@@ -1,0 +1,35 @@
+#-------------------------------------------------
+#
+#   S1223W-0.6T
+#
+#  Dimensional unit and parameter data.
+#  Mass & Inertia breakdown.
+#-------------------------------------------------
+#  Names and scalings for units to be used for trim and eigenmode calculations.
+#  The Lunit and Munit values scale the mass, xyz, and inertia table data below.
+#  Lunit value will also scale all lengths and areas in the AVL input file.
+#
+Lunit =     1.0000 m
+Munit =     1.0000 kg
+Tunit = 1.0 s
+#-------------------------
+#  Gravity and density to be used as default values in trim setup (saves runtime typing).
+#  Must be in the unit names given above (i.e. m,kg,s).
+g   = 9.81
+rho = 1.225
+#-------------------------
+#  Mass & Inertia breakdown.
+#  x y z  is location of item's own CG.
+#  Ixx... are item's inertias about item's own CG.
+#
+#  x,y,z system here must be exactly the same one used in the .avl input file
+#     (same orientation, same origin location, same length units)
+#
+#     mass          x          y          z        Ixx        Iyy        Izz        Ixy        Ixz        Iyz 
+     0.125     0.0728   4.88e-18      0.025    0.00306   0.000133    0.00317          0   1.89e-05          0 ! Main Wing
+     0.018      0.454   2.76e-17          0    8.8e-05   8.47e-06   9.65e-05          0          0          0 ! Elevator
+      0.01      0.448  -7.43e-17      0.046   9.43e-06   1.31e-05   3.64e-06          0   1.83e-06          0 ! Fin
+     0.134       0.08          0          0      0.000      0.000      0.000 ! fuselage
+     0.075       0.01          0          0      0.000      0.000      0.000 ! battery
+     0.028      -0.05          0          0      0.000      0.000      0.000 ! motor
+     0.124       0.07          0          0      0.000      0.000      0.000 ! avionics

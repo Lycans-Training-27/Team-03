@@ -1,0 +1,1012 @@
+
+\documentclass[11pt,a4paper]{article}
+
+% ============================================================
+% PACKAGES
+% ============================================================
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    left=25mm,
+    right=25mm,
+    top=25mm,
+    bottom=25mm
+}
+
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{siunitx}
+
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+
+% ============================================================
+% DOCUMENT SETTINGS
+% ============================================================
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue,
+    pdftitle={AVL Dynamic Stability and Eigenmode Analysis},
+    pdfauthor={Aircraft Stability Analysis}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+\setlist[itemize]{leftmargin=1.5em}
+\setlist[enumerate]{leftmargin=1.5em}
+
+\sisetup{
+    scientific-notation = true,
+    round-mode = places,
+    round-precision = 4
+}
+
+% ============================================================
+% HEADER / FOOTER
+% ============================================================
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Dynamic Stability Analysis}
+\rhead{AVL}
+\cfoot{\thepage}
+
+% ============================================================
+% DOCUMENT
+% ============================================================
+
+\begin{document}
+
+
+% ============================================================
+\title{Dynamic Stability Analysis Using AVL:}
+% ============================================================
+
+
+The main objectives of this analysis are:
+
+\begin{enumerate}
+    \item To obtain the aerodynamic stability derivatives of the aircraft.
+    \item To determine the longitudinal and lateral-directional stability
+    characteristics.
+    \item To determine the linearized state-space representation of the
+    aircraft.
+    \item To calculate the eigenvalues of the linearized dynamic system.
+    \item To identify the aircraft's principal dynamic modes.
+    \item To evaluate the damping, natural frequency, and stability of each
+    mode.
+\end{enumerate}
+
+No control-surface actuation or feedback control system was introduced in
+this analysis. Therefore, the calculated eigenvalues represent the
+uncontrolled aircraft dynamics at the selected operating condition.
+
+% ============================================================
+\section{Aircraft Configuration and Reference Data}
+% ============================================================
+
+The AVL model represents the complete aerodynamic configuration of the
+aircraft, consisting of the main wing, horizontal tail, and vertical tail.
+
+The aerodynamic reference quantities used in the AVL model are summarized
+in Table~\ref{tab:reference_data}.
+
+\begin{table}[H]
+\centering
+\caption{Aircraft reference quantities used in AVL.}
+\label{tab:reference_data}
+\begin{tabular}{lc}
+\toprule
+Parameter & Value \\
+\midrule
+Reference area, $S_{\mathrm{ref}}$
+    & $0.08001~\mathrm{m^2}$ \\
+
+Reference chord, $c_{\mathrm{ref}}$
+    & $0.12969~\mathrm{m}$ \\
+
+Reference span, $b_{\mathrm{ref}}$
+    & $0.63000~\mathrm{m}$ \\
+
+$X_{\mathrm{ref}}$
+    & $0.07879~\mathrm{m}$ \\
+
+$Y_{\mathrm{ref}}$
+    & $0.00000~\mathrm{m}$ \\
+
+$Z_{\mathrm{ref}}$
+    & $0.00697~\mathrm{m}$ \\
+
+Air density, $\rho$
+    & $1.225~\mathrm{kg/m^3}$ \\
+
+Gravity, $g$
+    & $9.81~\mathrm{m/s^2}$ \\
+
+Aircraft mass, $m$
+    & $0.514~\mathrm{kg}$ \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+The total mass was obtained from the complete mass breakdown:
+
+\begin{equation}
+\begin{aligned}
+m &=
+0.125+0.018+0.010+0.134\\
+&\quad+0.075+0.028+0.124\\
+&=0.514~\mathrm{kg}.
+\end{aligned}
+\end{equation}
+
+The calculated center of gravity is approximately
+
+\begin{equation}
+X_{CG}=0.07880~\mathrm{m},
+\end{equation}
+
+\begin{equation}
+Y_{CG}\approx0,
+\end{equation}
+
+and
+
+\begin{equation}
+Z_{CG}=0.006975~\mathrm{m}.
+\end{equation}
+
+% ============================================================
+\section{Mass and Inertia Properties}
+% ============================================================
+
+The mass and inertia properties supplied to AVL were obtained from the
+aircraft mass model.
+
+The principal inertia values used in the dynamic analysis were
+
+\begin{align}
+I_{xx} &= 0.003232~\mathrm{kg\,m^2},\\
+I_{yy} &= 0.004960~\mathrm{kg\,m^2},\\
+I_{zz} &= 0.008001~\mathrm{kg\,m^2}.
+\end{align}
+
+The corresponding inertia tensor was
+
+\begin{equation}
+\mathbf{I}
+=
+\begin{bmatrix}
+0.003232 & 0 & 1.89\times10^{-5}\\
+0 & 0.004960 & 0\\
+1.89\times10^{-5} & 0 & 0.008001
+\end{bmatrix}
+\mathrm{kg\,m^2}.
+\end{equation}
+
+These values were used by AVL in constructing the linearized aircraft
+equations of motion.
+
+% ============================================================
+\section{AVL Analysis Setup}
+% ============================================================
+
+The aircraft was analyzed using AVL version 3.37.
+
+The aerodynamic model consisted of:
+
+\begin{itemize}
+    \item Main wing,
+    \item Horizontal tail,
+    \item Vertical tail.
+\end{itemize}
+
+The model contained 83 aerodynamic strips and 809 vortex elements.
+
+The following operating condition was selected for the dynamic analysis:
+
+\begin{equation}
+V=20.0~\mathrm{m/s},
+\end{equation}
+
+with
+
+\begin{equation}
+\rho=1.225~\mathrm{kg/m^3}.
+\end{equation}
+
+The corresponding Run Case 1 solution produced a required lift coefficient
+of
+
+\begin{equation}
+C_L=0.25723.
+\end{equation}
+
+% ============================================================
+\section{Aerodynamic Operating Point}
+% ============================================================
+
+At the selected operating condition, AVL returned the following
+aerodynamic solution:
+
+\begin{table}[H]
+\centering
+\caption{Aerodynamic operating point obtained from AVL.}
+\label{tab:operating_point}
+\begin{tabular}{lc}
+\toprule
+Quantity & Value \\
+\midrule
+Velocity, $V$ & $20.0~\mathrm{m/s}$ \\
+Angle of attack, $\alpha$ & $-8.303^\circ$ \\
+Lift coefficient, $C_L$ & $0.25723$ \\
+Drag coefficient, $C_D$ & $0.01696$ \\
+Pitching moment coefficient, $C_m$ & $+0.21928$ \\
+$C_X$ & $-0.05393$ \\
+$C_Z$ & $-0.25208$ \\
+Induced drag coefficient, $C_{D_i}$ & $0.016958$ \\
+Span efficiency, $e$ & $0.2679$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\subsection{Operating Point Limitation}
+% ============================================================
+
+An important distinction must be made between the lift condition imposed
+during the AVL analysis and a complete longitudinal trim condition.
+
+The calculated pitching moment coefficient was
+
+\begin{equation}
+C_m=+0.21928.
+\end{equation}
+
+Since
+
+\begin{equation}
+C_m\neq0,
+\end{equation}
+
+the selected operating point is not a complete longitudinal pitching
+moment equilibrium.
+
+Therefore, the eigenvalues presented in this report should be interpreted
+as the linearized dynamic characteristics of the aircraft around the
+selected AVL operating point.
+
+This limitation is explicitly stated because the purpose of the present
+analysis is to extract and evaluate the aircraft's dynamic modes, while
+the final trimmed aerodynamic condition is investigated separately.
+
+% ============================================================
+\section{Static Stability Derivatives}
+% ============================================================
+
+AVL was used to calculate the aircraft stability derivatives.
+
+The resulting derivatives are presented in
+Table~\ref{tab:static_derivatives}.
+
+\begin{table}[H]
+\centering
+\caption{Static stability derivatives obtained from AVL.}
+\label{tab:static_derivatives}
+\begin{tabular}{lr}
+\toprule
+Derivative & Value \\
+\midrule
+$C_{L_\alpha}$ & $4.757761$ \\
+$C_{L_\beta}$ & $0$ \\
+$C_{Y_\beta}$ & $-0.246263$ \\
+$C_{l_\beta}$ & $-0.081797$ \\
+$C_{m_\alpha}$ & $-0.895599$ \\
+$C_{m_\beta}$ & $0$ \\
+$C_{n_\beta}$ & $0.112811$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The negative pitching moment derivative
+
+\begin{equation}
+C_{m_\alpha}=-0.895599
+\end{equation}
+
+indicates positive longitudinal static stability.
+
+The lateral-directional derivatives also indicate favorable static
+stability characteristics:
+
+\begin{equation}
+C_{l_\beta}=-0.081797,
+\end{equation}
+
+and
+
+\begin{equation}
+C_{n_\beta}=+0.112811.
+\end{equation}
+
+These results indicate restoring rolling and yawing moments following
+small sideslip disturbances.
+
+% ============================================================
+\section{Dynamic Stability Derivatives}
+% ============================================================
+
+The dynamic stability derivatives calculated by AVL are shown in
+Table~\ref{tab:dynamic_derivatives}.
+
+\begin{table}[H]
+\centering
+\caption{Dynamic stability derivatives obtained from AVL.}
+\label{tab:dynamic_derivatives}
+\begin{tabular}{lr}
+\toprule
+Derivative & Value \\
+\midrule
+$C_{L_p}$ & $0$ \\
+$C_{L_q}$ & $9.007163$ \\
+$C_{L_r}$ & $0$ \\
+$C_{Y_p}$ & $-0.236351$ \\
+$C_{Y_q}$ & $-0.000002$ \\
+$C_{Y_r}$ & $0.309552$ \\
+$C_{l_p}$ & $-0.426048$ \\
+$C_{l_q}$ & $0$ \\
+$C_{l_r}$ & $0.136908$ \\
+$C_{m_p}$ & $0$ \\
+$C_{m_q}$ & $-16.254972$ \\
+$C_{m_r}$ & $0$ \\
+$C_{n_p}$ & $0.016380$ \\
+$C_{n_q}$ & $-0.000002$ \\
+$C_{n_r}$ & $-0.155319$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The roll damping derivative
+
+\begin{equation}
+C_{l_p}=-0.426048
+\end{equation}
+
+indicates a restoring aerodynamic moment opposing roll rate.
+
+Similarly, the pitch damping derivative
+
+\begin{equation}
+C_{m_q}=-16.254972
+\end{equation}
+
+indicates strong aerodynamic damping in pitch.
+
+The yaw damping derivative is
+
+\begin{equation}
+C_{n_r}=-0.155319,
+\end{equation}
+
+which also contributes to damping of the lateral-directional response.
+
+% ============================================================
+\section{Neutral Point and Static Margin}
+% ============================================================
+
+The neutral point calculated by AVL was
+
+\begin{equation}
+X_{NP}=0.103210~\mathrm{m}.
+\end{equation}
+
+The aircraft center of gravity was
+
+\begin{equation}
+X_{CG}=0.07880~\mathrm{m}.
+\end{equation}
+
+The static margin is therefore
+
+\begin{equation}
+SM=
+\frac{X_{NP}-X_{CG}}{c_{\mathrm{ref}}}.
+\end{equation}
+
+Substituting the measured values gives
+
+\begin{equation}
+SM=
+\frac{0.103210-0.07880}{0.12969}
+\approx0.188.
+\end{equation}
+
+Thus,
+
+\begin{equation}
+\boxed{SM\approx18.8\%}
+\end{equation}
+
+which indicates a positive static margin.
+
+This result agrees with the negative value of $C_{m_\alpha}$ and confirms
+positive longitudinal static stability.
+
+% ============================================================
+\section{Linearized State-Space Model}
+% ============================================================
+
+AVL generated the linearized equations of motion in state-space form:
+
+\begin{equation}
+\dot{\mathbf{x}}=\mathbf{A}\mathbf{x}.
+\end{equation}
+
+The state vector used by AVL was
+
+\begin{equation}
+\mathbf{x}
+=
+\begin{bmatrix}
+u & w & q & \theta &
+v & p & r & \phi &
+x & y & z & \psi
+\end{bmatrix}^{T}.
+\end{equation}
+
+The system matrix obtained directly from AVL was
+
+\begin{equation}
+\mathbf{A}
+=
+\begin{bmatrix}
+-0.3538 & -0.9998 & 2.7917 & -9.8100 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+-2.2079 & -8.6195 & 18.2728 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+7.1011 & -22.1349 & -24.5711 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+0 & 0 & 1.0000 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0 & -0.4689 & -3.0633 & -19.5583 & 9.8100 & 0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0 & -10.9110 & -22.1584 & 9.3661 & 0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0 & 9.1177 & 0.6975 & -4.1497 & 0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0 & 0 & 1.0000 & 0 & 0 & 0 & 0 & 0 & 0\\
+1.0000 & 0 & 0 & -2.8883 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0 & 1.0000 & 0 & 0 & 2.8883 & 0 & 0 & 0 & 19.7903\\
+0 & 1.0000 & 0 & -19.7903 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0 & 0 & 0 & 1.0000 & 0 & 0 & 0 & 0 & 0
+\end{bmatrix}.
+\end{equation}
+
+The eigenvalues of this matrix provide the natural dynamic modes of the
+aircraft.
+
+% ============================================================
+\section{Eigenvalue Analysis}
+% ============================================================
+
+For a linearized dynamic system, each eigenvalue may be written as
+
+\begin{equation}
+\lambda=\sigma\pm i\omega,
+\end{equation}
+
+where $\sigma$ is the real part and $\omega$ is the imaginary part.
+
+The sign of $\sigma$ determines stability:
+
+\begin{equation}
+\sigma<0
+\quad\Rightarrow\quad
+\text{stable mode},
+\end{equation}
+
+while
+
+\begin{equation}
+\sigma>0
+\quad\Rightarrow\quad
+\text{unstable mode}.
+\end{equation}
+
+The eigenvalues obtained directly from AVL are shown in
+Table~\ref{tab:eigenvalues}.
+
+\begin{table}[H]
+\centering
+\caption{Eigenvalues obtained from AVL Run Case 1.}
+\label{tab:eigenvalues}
+\begin{tabular}{ccl}
+\toprule
+Mode & Eigenvalue & Type \\
+\midrule
+1 &
+$-23.800234$ &
+Real \\
+
+2--3 &
+$-1.5364187\pm13.028574i$ &
+Complex pair \\
+
+4--5 &
+$-16.775574\pm17.971889i$ &
+Complex pair \\
+
+6 &
+$+0.096084811$ &
+Real \\
+
+7--8 &
+$+0.0033943544\pm1.3366623i$ &
+Complex pair \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Dynamic Mode Identification}
+% ============================================================
+
+The eigenvalue spectrum corresponds to five principal aircraft dynamic
+modes:
+
+\begin{enumerate}
+    \item Roll subsidence,
+    \item Dutch roll,
+    \item Short period,
+    \item Spiral mode,
+    \item Phugoid.
+\end{enumerate}
+
+Complex conjugate eigenvalues correspond to oscillatory modes, whereas
+real eigenvalues correspond to non-oscillatory modes.
+
+% ============================================================
+\subsection{Roll Subsidence}
+% ============================================================
+
+The first eigenvalue is
+
+\begin{equation}
+\lambda_{\mathrm{roll}}
+=
+-23.800234.
+\end{equation}
+
+The negative real eigenvalue indicates a stable, non-oscillatory roll
+subsidence mode.
+
+The characteristic time constant is
+
+\begin{equation}
+\tau_{\mathrm{roll}}
+=
+\frac{1}{|\sigma|}
+=
+\frac{1}{23.800234}
+\approx0.0420~\mathrm{s}.
+\end{equation}
+
+The corresponding half-life is
+
+\begin{equation}
+t_{1/2}
+=
+\frac{\ln2}{23.800234}
+\approx0.0291~\mathrm{s}.
+\end{equation}
+
+Therefore, the roll disturbance decays very rapidly.
+
+% ============================================================
+\subsection{Dutch Roll}
+% ============================================================
+
+The Dutch-roll eigenvalue pair is
+
+\begin{equation}
+\lambda_{\mathrm{DR}}
+=
+-1.5364187
+\pm13.028574i.
+\end{equation}
+
+The natural frequency is calculated from
+
+\begin{equation}
+\omega_n
+=
+\sqrt{\sigma^2+\omega^2}.
+\end{equation}
+
+Therefore,
+
+\begin{equation}
+\omega_n
+=
+\sqrt{(-1.5364187)^2+(13.028574)^2}
+\approx13.119~\mathrm{rad/s}.
+\end{equation}
+
+The damping ratio is
+
+\begin{equation}
+\zeta
+=
+-\frac{\sigma}{\omega_n}
+\approx0.117.
+\end{equation}
+
+The oscillation period is
+
+\begin{equation}
+T=
+\frac{2\pi}{|\omega|}
+=
+\frac{2\pi}{13.028574}
+\approx0.482~\mathrm{s}.
+\end{equation}
+
+The Dutch-roll mode is therefore stable but lightly damped.
+
+% ============================================================
+\subsection{Short-Period Mode}
+% ============================================================
+
+The short-period eigenvalue pair is
+
+\begin{equation}
+\lambda_{\mathrm{SP}}
+=
+-16.775574
+\pm17.971889i.
+\end{equation}
+
+The natural frequency is
+
+\begin{equation}
+\omega_n
+=
+\sqrt{(-16.775574)^2+(17.971889)^2}
+\approx24.583~\mathrm{rad/s}.
+\end{equation}
+
+The damping ratio is
+
+\begin{equation}
+\zeta
+=
+-\frac{-16.775574}{24.583}
+\approx0.682.
+\end{equation}
+
+The oscillation period is
+
+\begin{equation}
+T=
+\frac{2\pi}{17.971889}
+\approx0.350~\mathrm{s}.
+\end{equation}
+
+The short-period mode is therefore stable and strongly damped.
+
+% ============================================================
+\subsection{Spiral Mode}
+% ============================================================
+
+The sixth eigenvalue is
+
+\begin{equation}
+\lambda_{\mathrm{spiral}}
+=
++0.096084811.
+\end{equation}
+
+Because the real part is positive, the spiral mode is unstable.
+
+The disturbance amplitude behaves approximately as
+
+\begin{equation}
+x(t)\propto
+e^{0.096084811t}.
+\end{equation}
+
+The corresponding doubling time is
+
+\begin{equation}
+t_2
+=
+\frac{\ln2}{0.096084811}
+\approx7.22~\mathrm{s}.
+\end{equation}
+
+Thus, the amplitude associated with the spiral mode doubles approximately
+every $7.22$ seconds in the absence of corrective control input.
+
+This is the most significant dynamic instability identified in the
+present analysis.
+
+% ============================================================
+\subsection{Phugoid}
+% ============================================================
+
+The phugoid eigenvalue pair is
+
+\begin{equation}
+\lambda_{\mathrm{PH}}
+=
++0.0033943544
+\pm1.3366623i.
+\end{equation}
+
+The natural frequency is
+
+\begin{equation}
+\omega_n
+=
+\sqrt{(0.0033943544)^2+(1.3366623)^2}
+\approx1.33666~\mathrm{rad/s}.
+\end{equation}
+
+The damping ratio is
+
+\begin{equation}
+\zeta
+=
+-\frac{0.0033943544}{1.33666}
+\approx-0.00254.
+\end{equation}
+
+The negative damping ratio indicates that the mode is very slightly
+unstable.
+
+The oscillation period is
+
+\begin{equation}
+T=
+\frac{2\pi}{1.3366623}
+\approx4.70~\mathrm{s}.
+\end{equation}
+
+The amplitude doubling time is
+
+\begin{equation}
+t_2
+=
+\frac{\ln2}{0.0033943544}
+\approx204.2~\mathrm{s}.
+\end{equation}
+
+Therefore, although the phugoid is mathematically unstable, its growth
+rate is extremely small compared with that of the spiral mode.
+
+% ============================================================
+\section{Dynamic Mode Summary}
+% ============================================================
+
+The principal dynamic characteristics are summarized in
+Table~\ref{tab:mode_summary}.
+
+\begin{table}[H]
+\centering
+\caption{Summary of the aircraft dynamic modes.}
+\label{tab:mode_summary}
+\begin{tabular}{lccccc}
+\toprule
+Mode & $\sigma$ & $\omega$ & $\omega_n$ & $\zeta$ & Stability \\
+\midrule
+Roll subsidence
+& $-23.800$
+& $0$
+& $23.800$
+& $1.000$
+& Stable \\
+
+Dutch roll
+& $-1.536$
+& $\pm13.029$
+& $13.119$
+& $0.117$
+& Stable \\
+
+Short period
+& $-16.776$
+& $\pm17.972$
+& $24.583$
+& $0.682$
+& Stable \\
+
+Spiral
+& $+0.0961$
+& $0$
+& $0.0961$
+& --
+& Unstable \\
+
+Phugoid
+& $+0.00339$
+& $\pm1.337$
+& $1.337$
+& $-0.00254$
+& Very slightly unstable \\
+
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Overall Stability Assessment}
+% ============================================================
+
+The eigenvalue analysis reveals three stable dynamic modes and two
+unstable modes.
+
+The roll subsidence mode is highly stable, with a very short time
+constant. The short-period mode is also strongly damped, with a damping
+ratio of approximately
+
+\begin{equation}
+\zeta_{\mathrm{SP}}\approx0.682.
+\end{equation}
+
+The Dutch-roll mode is stable but lightly damped:
+
+\begin{equation}
+\zeta_{\mathrm{DR}}\approx0.117.
+\end{equation}
+
+The principal instability is the spiral mode, which has a positive real
+eigenvalue of
+
+\begin{equation}
+\sigma_{\mathrm{spiral}}
+=
+0.0961~\mathrm{s^{-1}}.
+\end{equation}
+
+Its doubling time of approximately $7.22$ seconds indicates a slowly
+diverging lateral-directional response.
+
+The phugoid is also mathematically unstable, but its growth rate is much
+smaller:
+
+\begin{equation}
+\sigma_{\mathrm{phugoid}}
+=
+0.00339~\mathrm{s^{-1}}.
+\end{equation}
+
+Its corresponding doubling time is approximately $204$ seconds.
+Consequently, the phugoid instability is extremely weak.
+
+% ============================================================
+\section{Comparison with Static Stability}
+% ============================================================
+
+The dynamic results are generally consistent with the static stability
+characteristics.
+
+The negative pitching-moment derivative
+
+\begin{equation}
+C_{m_\alpha}=-0.895599
+\end{equation}
+
+and the positive static margin
+
+\begin{equation}
+SM\approx18.8\%
+\end{equation}
+
+indicate positive longitudinal static stability.
+
+This agrees with the stable short-period mode.
+
+Similarly,
+
+\begin{equation}
+C_{l_\beta}=-0.081797
+\end{equation}
+
+and
+
+\begin{equation}
+C_{n_\beta}=+0.112811
+\end{equation}
+
+indicate favorable static lateral-directional stability.
+
+However, the unstable spiral eigenvalue demonstrates that positive static
+stability does not necessarily guarantee complete dynamic stability.
+
+This distinction is important in aircraft design: static stability
+describes the initial restoring tendency following a disturbance, whereas
+dynamic stability describes the subsequent time evolution of that
+disturbance.
+
+% ============================================================
+\section{Conclusions}
+% ============================================================
+
+The AVL dynamic stability analysis provided the linearized dynamic
+characteristics of the aircraft at the selected operating condition.
+
+The calculated eigenvalues were
+
+\begin{equation}
+\boxed{
+\begin{aligned}
+\lambda_1 &=-23.8002,\\
+\lambda_{2,3}
+&=-1.5364\pm13.0286i,\\
+\lambda_{4,5}
+&=-16.7756\pm17.9719i,\\
+\lambda_6
+&=+0.09608,\\
+\lambda_{7,8}
+&=+0.003394\pm1.33666i.
+\end{aligned}}
+\end{equation}
+
+The aircraft therefore exhibits:
+
+\begin{itemize}
+    \item stable roll subsidence,
+    \item stable but lightly damped Dutch roll,
+    \item stable and strongly damped short-period motion,
+    \item an unstable spiral mode,
+    \item a very weakly unstable phugoid mode.
+\end{itemize}
+
+The spiral mode represents the primary dynamic stability concern because
+it has the largest positive real eigenvalue and therefore the fastest
+growth among the unstable modes.
+
+The phugoid instability is considerably weaker and develops over a much
+longer time scale.
+
+The static stability results are favorable, with a positive static margin
+of approximately $18.8\%$ and a negative $C_{m_\alpha}$.
+
+Finally, the interpretation of the eigenvalues must account for the fact
+that the selected AVL operating point satisfies the required lift
+condition but does not represent a complete longitudinal trim condition,
+as indicated by
+
+\begin{equation}
+C_m=+0.21928.
+\end{equation}
+
+Therefore, the results presented here should be regarded as the
+linearized dynamic characteristics of the aircraft at the analyzed AVL
+operating point. A final dynamic stability assessment at a fully trimmed
+flight condition can be performed subsequently if required.
+
+% ============================================================
+% END OF DOCUMENT
+% ============================================================
+
+\end{document}
+

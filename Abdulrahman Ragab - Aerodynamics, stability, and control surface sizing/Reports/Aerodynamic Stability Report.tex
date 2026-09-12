@@ -1,0 +1,640 @@
+\documentclass[11pt,a4paper]{article}
+
+% ============================================================
+% PACKAGES
+% ============================================================
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    left=25mm,
+    right=25mm,
+    top=25mm,
+    bottom=25mm
+}
+
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{siunitx}
+
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{multirow}
+\usepackage{float}
+
+% ============================================================
+% DOCUMENT SETTINGS
+% ============================================================
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue,
+    pdftitle={Comprehensive Aircraft Design, Aerodynamic Trade Study, and Dynamic Stability Analysis},
+    pdfauthor={Design \& Engineering Team}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+\setlist[itemize]{leftmargin=1.5em}
+\setlist[enumerate]{leftmargin=1.5em}
+
+\sisetup{
+    scientific-notation = true,
+    round-mode = places,
+    round-precision = 4
+}
+
+% ============================================================
+% HEADER / FOOTER
+% ============================================================
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Aircraft Design \& Stability Analysis}
+\rhead{AVL / XFLR5}
+\cfoot{\thepage}
+
+\begin{document}
+
+
+
+% ============================================================
+\section{Airfoil Selection Trade Study}
+% ============================================================
+
+\subsection{Methodology \& Formulation}
+Used Airfoils: 
+\begin{itemize}
+    \item GOE165
+    \item S1223
+    \item E423
+\end{itemize}
+
+
+\subsection{Extracted Aerodynamic Parameters}
+\textbf{ ($Re = 200,000$) }
+
+
+\begin{table}[H]
+\centering
+\caption{Extracted Aerodynamic Data ($Re = 200,000$)}
+\label{tab:airfoil_extracted_data}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Airfoil} & \textbf{$C_{L,\max}$} & \textbf{$C_{D,\min}$} & \textbf{$(L/D)_{\max}$} & \textbf{$C_{m0}$ ($\alpha=0^\circ$)} & \textbf{$\alpha_{\text{stall}}$} \\
+\midrule
+E423   & 2.0338 & 0.01898 & 75.33 & -0.2451 & $13.0^\circ$ \\
+GOE165 & 1.5447 & 0.01313 & 60.91 & -0.1587 & $11.5^\circ$ \\
+S1223  & 2.2314 & 0.01778 & 71.81 & -0.2716 & $13.0^\circ$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsection{Trade Study Decision Matrix}
+
+
+\begin{table}[H]
+\centering
+\caption{Airfoil Trade Study Matrix}
+\label{tab:airfoil_trade_matrix}
+\begin{tabular}{lccccccr}
+\toprule
+\multirow{2}{*}{\textbf{Parameter}} & \multirow{2}{*}{\textbf{Weight ($W_i$)}} & \multicolumn{3}{c}{\textbf{Scores ($s_{ij}$)}} & \multicolumn{3}{c}{\textbf{Weighted Scores ($W_i \cdot s_{ij}$)}} \\
+\cmidrule(lr){3-5} \cmidrule(lr){6-8}
+& & \textbf{E423} & \textbf{GOE165} & \textbf{S1223} & \textbf{E423} & \textbf{GOE165} & \textbf{S1223} \\
+\midrule
+$C_{L,\max}$   & 0.35 & 0  & -1 & +1 & 0.00  & -0.35 & 0.35 \\
+$C_{D,\min}$   & 0.20 & -1 & +1 & 0  & -0.20 & 0.20  & 0.00 \\
+$(L/D)_{\max}$ & 0.25 & +1 & -1 & 0  & 0.25  & -0.25 & 0.00 \\
+$C_{m0}$       & 0.20 & 0  & +1 & -1 & 0.00  & 0.20  & -0.20 \\
+\midrule
+\textbf{Total Score ($S_j$)} & \textbf{1.00} & -- & -- & -- & \textbf{+0.05} & \textbf{-0.20} & \textbf{+0.15} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+Selected Airfoil: \textbf{S1223}
+
+% ============================================================
+\section{Wing Planform Trade Study}
+% ============================================================
+
+\subsection{Methodology \& Formulation}
+
+\subsection{Extracted Aerodynamic Parameters}
+$V_{cruise} = 20 m/s$
+
+\begin{table}[H]
+\centering
+\caption{Extracted Wing Aerodynamic and Stability Data ($V = 20.0\,\text{m/s}$)}
+\label{tab:wing_extracted_data}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Configuration} & \textbf{Max $C_L/C_D$} & \textbf{Max $\sqrt{C_L^3}/C_D^2$} & \textbf{$C_{m}$ Slope ($\partial C_m / \partial \alpha$)} & \textbf{Max $C_L$} \\
+\midrule
+S1223W-1.0T   & 11.45 & 11.62 & Moderate Negative & 1.82 \\
+S1223W-0.8T   & 12.80 & 13.01 & Good Negative     & 1.85 \\
+S1223W-0.6T   & 13.90 & 14.15 & Strong Negative   & 1.88 \\
+\textbf{S1223W-0.6T} & \textbf{14.25} & \textbf{14.48} & \textbf{Optimal Negative} & \textbf{1.88} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Aerodynamic Performance Comparison (Visuals)}
+Figure~\ref{fig:wing_graphs} illustrates the comparative XFLR5 graphs for the different taper ratios, showing the distinct improvements in lift-to-drag ratios, induced drag characteristics, and pitching moment stability slopes.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{wing graphs.png}
+\caption{XFLR5 Aerodynamic Comparison Graphs for Wing Variations ($0.6T$, $0.8T$, $1.0T$)}
+\label{fig:wing_graphs}
+\end{figure}
+
+
+\subsection{Trade Study Decision Matrix}
+
+\begin{table}[H]
+\centering
+\caption{Wing Configuration Trade Study Matrix}
+\label{tab:wing_trade_matrix}
+\begin{tabular}{lccccccr}
+\toprule
+\multirow{2}{*}{\textbf{Parameter}} & \multirow{2}{*}{\textbf{Weight ($W_i$)}} & \multicolumn{3}{c}{\textbf{Scores ($s_{ij}$)}} & \multicolumn{3}{c}{\textbf{Weighted Scores ($W_i \cdot s_{ij}$)}} \\
+\cmidrule(lr){3-5} \cmidrule(lr){6-8}
+& & \textbf{1.0T} & \textbf{0.8T} & \textbf{0.6T} & \textbf{1.0T} & \textbf{0.8T} & \textbf{0.6T} \\
+\midrule
+$(L/D)_{\max}$          & 0.30 & -1 & 0  & +1 & -0.30 & 0.00  & 0.30 \\
+$\sqrt{C_L^3}/C_D^2$   & 0.25 & -1 & 0  & +1 & -0.25 & 0.00  & 0.25 \\
+Stability ($C_m$ slope) & 0.25 & -1 & 0  & +1 & -0.25 & 0.00  & 0.25 \\
+$C_{L,\max}$            & 0.20 & -1 & 0  & +1 & -0.20 & 0.00  & 0.20 \\
+\midrule
+\textbf{Total Score ($S_j$)} & \textbf{1.00} & -- & -- & -- & \textbf{-1.00} & \textbf{0.00} & \textbf{+1.00} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsection{Selection Conclusion}
+Selected taper ratio $\lambda = 0.6$
+
+% ============================================================
+\section{Horizontal Tail Sizing \& Optimum Length Calculation}
+% ============================================================
+
+\begin{itemize}
+    \item $V_{HT} = 0.7$
+    \item ($\text{MAC} = 0.13\,\text{m}$
+    \item $S_w = 0.08001\,\text{m}^2$
+\end{itemize}
+  
+
+\begin{itemize}
+    \item \textbf{Fuselage cross section Length ($L_f$):} $0.08\,\text{m}$
+    \item \textbf{Equivalent Fuselage Diameter ($D_f$):} Evaluated via cross-sectional area $A_f$ as:
+    \begin{equation}
+        D_f = \sqrt{\frac{4 A_f}{\pi}} = 0.096\,\text{m}
+    \end{equation}
+    \item \textbf{Optimum Tail Arm Length ($L_{opt}$):} Derived from stability requirements and body geometry:
+    \begin{equation}
+        L_{opt} = \sqrt{\frac{4 \cdot \text{MAC} \cdot S_w \cdot V_{HT}}{\pi \cdot D_f}} = 0.311\,\text{m}
+    \end{equation}
+    \item \textbf{Required Horizontal Tail Area ($S_{HT}$):} Calculated using the tail volume relation:
+    \begin{equation}
+        S_{HT} = \frac{V_{HT} \cdot \text{MAC} \cdot S_w}{L_{opt}} = 0.0234\,\text{m}^2
+    \end{equation}
+    \item \textbf{Aspect Ratio ($AR_{ht}$):} Scaled relative to the main wing aspect ratio ($AR_w$):
+    \begin{equation}
+        AR_{ht} = \frac{2}{3} AR_w = 3.306
+    \end{equation}
+    \item \textbf{Horizontal Tail Wingspan ($b_{ht}$):} Derived from the aspect ratio and surface area:
+    \begin{equation}
+        b_{ht} = \sqrt{AR_{ht} \cdot S_{HT}} = 0.278\,\text{m}
+    \end{equation}
+\end{itemize}
+
+% ============================================================
+\section{Mass Distribution \& Center of Gravity (CG) Tuning}
+% ============================================================
+
+To resolve simulation inertia errors and align the system CG with the target $x_{CG} = 0.0742\,\text{m}$, component weights and point masses were distributed as follows:
+\begin{itemize}
+    \item \textbf{Main Wing:} $125\,\text{g}$ (at $X = 0.073\,\text{m}$)
+    \item \textbf{Fuselage and Hardware:} $134\,\text{g}$ (at $X = 0.08\,\text{m}$)
+    \item \textbf{Horizontal Tail (HT):} $18\,\text{g}$ (at $X = 0.454\,\text{m}$)
+    \item \textbf{Vertical Tail (VT):} $10\,\text{g}$ (at $X = 0.448\,\text{m}$)
+    \item \textbf{Battery:} $75\,\text{g}$ (at $X = 0.010\,\text{m}$)
+    \item \textbf{Motor:} $28\,\text{g}$ (at $X = -0.050\,\text{m}$)
+    \item \textbf{Avionics \& Electronics:} $124\,\text{g}$ (distributed around $X = 0.050\,\text{m}$ to $0.090\,\text{m}$)
+    \item \textbf{Total System Mass:} $514\,\text{g}$
+\end{itemize}
+
+% ============================================================
+\section{Horizontal Tail (HT) Trade Study \& Selection}
+% ============================================================
+
+
+\begin{table}[H]
+\centering
+\caption{Horizontal Tail Trade Study Matrix}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Evaluation Criteria} & \textbf{Weight} & \textbf{0.4T} & \textbf{0.6T} & \textbf{0.8T} & \textbf{1.0T} \\
+\midrule
+Trim Angle ($\alpha$ at $C_m=0$) & 25\% & -1 & 0 & 1 & 2 \\
+Static Stability ($Cm_\alpha$ Slope) & 25\% & 1 & 1 & 1 & 2 \\
+Aerodynamic Efficiency & 30\% & -1 & 2 & 1 & 0 \\
+Structural Weight & 20\% & 0 & 2 & 1 & -1 \\
+\midrule
+\textbf{Weighted Total Score} & \textbf{100\%} & \textbf{-0.3} & \textbf{1.25} & \textbf{1.00} & \textbf{0.8} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{Cm-alpha graph for HT.png}
+\caption{Cm-$\alpha$ graph for Horizontal Tail ($0.4$ ,$0.6T$, $0.8T$, $1.0T$)}
+\label{fig:ht_graphs}
+\end{figure}
+
+Selected Taper Ratio: $\lambda = 0.6$
+
+% ============================================================
+\section{Vertical Tail Design and Trade Studies}
+% ============================================================
+
+\subsection{Vertical Tail Aspect Ratio (AR) Trade Study}
+\begin{itemize}
+    \item $AR = 1.3, 1.5, 1.7, 1.9,$ and $2.1$
+    \item $\lambda = 0.4 , 0.6 , 0.8 , 1$
+    \item $L_{opt} = 0.311 \text{m}$ 
+\end{itemize}
+
+
+
+
+\subsubsection{Vertical Tail Sizing \& Numerical Derivation}
+\begin{itemize}
+    \item \textbf{Vertical Tail Area ($S_{VT}$):} 
+    \begin{equation}
+        S_{VT} = \frac{V_{VT} \cdot S_w \cdot b_w}{L_{opt}} = \frac{0.05 \times 0.08\,\text{m}^2 \times 0.63\,\text{m}}{0.311\,\text{m}} \approx 0.0081\,\text{m}^2
+    \end{equation}
+    
+\end{itemize}
+
+\subsubsection{Trade Study Matrix}
+
+\begin{table}[H]
+\centering
+\caption{Vertical Tail Aspect Ratio Trade Study Matrix (-2 to +2 Scale)}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Evaluation Criteria} & \textbf{Weight} & \textbf{AR = 1.3} & \textbf{AR = 1.5} & \textbf{AR = 1.7} & \textbf{AR = 1.9} & \textbf{AR = 2.1} \\
+\midrule
+Directional Stability ($C_{n\beta}$) & 40\% & -1 & \textbf{+2} & +1 & +1 & -1 \\
+Rolling-Yaw Coupling ($C_{l\beta}$) & 30\% & -1 & \textbf{+2} & 0 & -1 & -2 \\
+Structural Rigidity & 30\% & +2 & \textbf{+1} & 0 & -1 & -2 \\
+\midrule
+\textbf{Weighted Total Score} & \textbf{100\%} & \textbf{-0.10} & \textbf{+1.70} & \textbf{+0.30} & \textbf{-0.20} & \textbf{-1.50} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htpt]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{AR graphs.jpeg}
+        \caption{AR = 1.3 Graph}
+        \end{minipage}
+        \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{TR Graphs.png}
+        \caption{AR = 1.3 Graph}
+        \end{minipage}
+        \hfill 
+
+
+\end{figure}
+
+
+\textbf{Selected Parameters:}
+\begin{itemize}
+    \item AR = 1.5
+    \item $b_{VT} = 0.11\,\text{m}$
+    \item $S_{VT} = 8.1\times 10^{-3}\,\text{m}^2$
+\end{itemize}
+
+\subsection{Vertical Tail Taper Ratio Trade Study}
+
+\begin{table}[H]
+\centering
+\caption{Vertical Tail Taper Ratio Trade Study Matrix (-2 to +2 Scale)}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Evaluation Criteria} & \textbf{Weight} & \textbf{0.4T} & \textbf{0.6T} & \textbf{0.8T} & \textbf{1.0T} \\
+\midrule
+Directional Stability ($C_{n\beta}$) & 40\% & -1 & \textbf{+2} & +1 & 0 \\
+Rolling-Yaw Coupling ($C_{l\beta}$) & 30\% & -1 & \textbf{+2} & 0 & -1 \\
+Aerodynamic Efficiency & 20\% & 0 & \textbf{+2} & +1 & -1 \\
+Structural Weight & 10\% & +1 & \textbf{+1} & 0 & -1 \\
+\midrule
+\textbf{Weighted Total Score} & \textbf{100\%} & \textbf{-0.70} & \textbf{+2.00} & \textbf{+0.60} & \textbf{-0.50} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Selection Conclusion}
+The \textbf{0.6 Taper Ratio} was used as it is the best according to the trade study
+
+\section{Modification for dynamic stability analysis}
+The dynamic stability analysis of the aircraft was initiated following two major geometric modifications: first, increasing the wing dihedral angle to $7^\circ$ to enhance lateral stability, and second, adjusting the tail-to-wing spacing to $0.4\,\text{m}$ to improve tail effectiveness for both longitudinal and lateral stability. As a result of these modifications, the performance curves shown below were successfully obtained:
+
+\begin{figure}[htbp]
+    \centering
+    % First graph: Cl-beta
+    \begin{minipage}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{cl_beta.png} % Replace with actual filename
+        \caption{Rolling Moment vs. Sideslip ($Cl-\beta$)}
+        \label{fig:cl_beta}
+    \end{minipage}
+    \hfill
+    % Second graph: Cn-beta
+    \begin{minipage}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{cn_beta.png} % Replace with actual filename
+        \caption{Yawing Moment vs. Sideslip ($Cn-\beta$)}
+        \label{fig:cn_beta}
+    \end{minipage}
+    \hfill
+    % Third graph: Cm-alpha
+    \begin{minipage}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{cm_alpha.png} % Replace with actual filename
+        \caption{Pitching Moment vs. Angle of Attack ($Cm-\alpha$)}
+        \label{fig:cm_alpha}
+    \end{minipage}
+    \caption{Aerodynamic stability curves after modifying the wing dihedral ($7^\circ$) and the tail-to-wing distance ($0.4\,\text{m}$).}
+    \label{fig:stability_graphs}
+\end{figure}
+
+Longitudinal Modes Graphs:
+\begin{figure}[htbp]
+    \centering
+    % First graph: Cl-beta
+    \begin{minipage}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Short Mode.png} % Replace with actual filename
+        \caption{Short Mode Graph}
+        
+    \end{minipage}
+    \hfill
+    % Second graph: Cn-beta
+    \begin{minipage}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Phugoid Mode.png} % Replace with actual filename
+        \caption{Phugoid Mode Graph}
+        \label{fig:cn_beta}
+    \end{minipage}
+
+\end{figure}
+
+Lateral Modes Graphs:
+\begin{figure}[htbp]
+    \centering
+    % First graph: Cl-beta
+    \begin{subfigure}[b]{0.3\textwidth}
+        
+        \includegraphics[width=\textwidth]{Roll Mode.png} % Replace with actual filename
+        \caption{Roll Damping Mode Graph}
+        
+    \end{subfigure}
+    \hfill
+    % Second graph: Cn-beta
+    \begin{subfigure}[b]{0.3\textwidth}
+        
+        \includegraphics[width=\textwidth]{Dutch Mode.png} % Replace with actual filename
+        \caption{Dutch Mode Graph}
+        \label{fig:cn_beta}
+    \end{subfigure}
+    \hfill
+    
+    \begin{subfigure}[b]{0.3\textwidth}
+        
+        \includegraphics[width=\textwidth]{Spiral Mode.png} % Replace with actual filename
+        \caption{Spiral Mode Graph}
+        \label{fig:cn_beta}
+    \end{subfigure}
+    
+\end{figure}
+
+
+% ============================================================
+\section{Aircraft Configuration and Reference Data for Dynamic Analysis}
+% ============================================================
+
+
+\begin{table}[H]
+\centering
+\caption{Aircraft reference quantities used in AVL.}
+\label{tab:reference_data}
+\begin{tabular}{lc}
+\toprule
+Parameter & Value \\
+\midrule
+Reference area, $S_{\mathrm{ref}}$ & $0.08001~\mathrm{m^2}$ \\
+Reference chord, $c_{\mathrm{ref}}$ & $0.12969~\mathrm{m}$ \\
+Reference span, $b_{\mathrm{ref}}$ & $0.63000~\mathrm{m}$ \\
+$X_{\mathrm{ref}}$ & $0.07879~\mathrm{m}$ \\
+$Y_{\mathrm{ref}}$ & $0.00000~\mathrm{m}$ \\
+$Z_{\mathrm{ref}}$ & $0.00697~\mathrm{m}$ \\
+Air density, $\rho$ & $1.225~\mathrm{kg/m^3}$ \\
+Gravity, $g$ & $9.81~\mathrm{m/s^2}$ \\
+Aircraft mass, $m$ & $0.514~\mathrm{kg}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ============================================================
+\section{Mass and Inertia Properties}
+% ============================================================
+
+The principal inertia values used in the dynamic analysis were
+\begin{align}
+I_{xx} &= 0.003232~\mathrm{kg\,m^2},\\
+I_{yy} &= 0.004960~\mathrm{kg\,m^2},\\
+I_{zz} &= 0.008001~\mathrm{kg\,m^2}.
+\end{align}
+
+The corresponding inertia tensor was
+\begin{equation}
+\mathbf{I}
+=
+\begin{bmatrix}
+0.003232 & 0 & 1.89\times10^{-5}\\
+0 & 0.004960 & 0\\
+1.89\times10^{-5} & 0 & 0.008001
+\end{bmatrix}
+\mathrm{kg\,m^2}.
+\end{equation}
+
+% ============================================================
+\section{AVL Analysis Setup and Operating Point}
+% ============================================================
+
+
+\begin{table}[H]
+\centering
+\caption{Aerodynamic operating point obtained from AVL}
+\label{tab:operating_point}
+\begin{tabular}{lc}
+\toprule
+Quantity & Value \\
+\midrule
+Velocity, $V$ & $20.0~\mathrm{m/s}$ \\
+Angle of attack, $\alpha$ & $-8.303^\circ$ \\
+Lift coefficient, $C_L$ & $0.25723$ \\
+Drag coefficient, $C_D$ & $0.01696$ \\
+Pitching moment coefficient, $C_m$ & $+0.21928$ \\
+$C_X$ & $-0.05393$ \\
+$C_Z$ & $-0.25208$ \\
+Induced drag coefficient, $C_{D_i}$ & $0.016958$ \\
+Span efficiency, $e$ & $0.2679$ \\
+$C_L$ & $0.25723$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ============================================================
+\section{Static and Dynamic Stability Derivatives}
+% ============================================================
+
+\begin{table}[H]
+\centering
+\caption{Static stability derivatives obtained from AVL.}
+\label{tab:static_derivatives}
+\begin{tabular}{lr}
+\toprule
+Derivative & Value \\
+\midrule
+$C_{L_\alpha}$ & $4.757761$ \\
+$C_{L_\beta}$ & $0$ \\
+$C_{Y_\beta}$ & $-0.246263$ \\
+$C_{l_\beta}$ & $-0.081797$ \\
+$C_{m_\alpha}$ & $-0.895599$ \\
+$C_{m_\beta}$ & $0$ \\
+$C_{n_\beta}$ & $0.112811$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Dynamic stability derivatives obtained from AVL.}
+\label{tab:dynamic_derivatives}
+\begin{tabular}{lr|lr}
+\toprule
+Derivative & Value & Derivative & Value \\
+\midrule
+$C_{L_p}$ & $0$ & $C_{m_p}$ & $0$ \\
+$C_{L_q}$ & $9.007163$ & $C_{m_q}$ & $-16.254972$ \\
+$C_{L_r}$ & $0$ & $C_{m_r}$ & $0$ \\
+$C_{Y_p}$ & $-0.236351$ & $C_{n_p}$ & $0.016380$ \\
+$C_{Y_q}$ & $-0.000002$ & $C_{n_q}$ & $-0.000002$ \\
+$C_{Y_r}$ & $0.309552$ & $C_{n_r}$ & $-0.155319$ \\
+$C_{l_p}$ & $-0.426048$ & & \\
+$C_{l_q}$ & $0$ & & \\
+$C_{l_r}$ & $0.136908$ & & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Neutral Point and Static Margin}
+% ============================================================
+
+The neutral point calculated by AVL was $X_{NP}=0.103210~\mathrm{m}$. With $X_{CG}=0.07880~\mathrm{m}$ and $c_{\mathrm{ref}}=0.12969~\mathrm{m}$, the static margin is:
+\begin{equation}
+SM = \frac{X_{NP}-X_{CG}}{c_{\mathrm{ref}}} = \frac{0.103210-0.07880}{0.12969} \approx 0.188 \implies \boxed{SM\approx18.8\%}
+\end{equation}
+
+% ============================================================
+\section{Linearized State-Space Model and Eigenvalue Analysis}
+% ============================================================
+
+AVL generated the linearized equations of motion in state-space form: $\dot{\mathbf{x}}=\mathbf{A}\mathbf{x}$.
+
+\begin{table}[H]
+\centering
+\caption{Eigenvalues obtained from AVL Run Case 1.}
+\label{tab:eigenvalues}
+\begin{tabular}{ccl}
+\toprule
+Mode & Eigenvalue & Type \\
+\midrule
+1 & $-23.800234$ & Real \\
+2--3 & $-1.5364187\pm13.028574i$ & Complex pair \\
+4--5 & $-16.775574\pm17.971889i$ & Complex pair \\
+6 & $+0.096084811$ & Real \\
+7--8 & $+0.0033943544\pm1.3366623i$ & Complex pair \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Dynamic Mode Identification}
+The eigenvalue spectrum corresponds to five principal aircraft dynamic modes:
+\begin{enumerate}
+    \item \textbf{Roll Subsidence:} $\lambda = -23.800234$ (Stable, time constant $\tau \approx 0.0420\,\text{s}$).
+    \item \textbf{Dutch Roll:} $\lambda = -1.5364 \pm 13.0286i$ ($\omega_n = 13.119\,\text{rad/s}$, $\zeta = 0.117$, stable but lightly damped).
+    \item \textbf{Short-Period Mode:} $\lambda = -16.7756 \pm 17.9719i$ ($\omega_n = 24.583\,\text{rad/s}$, $\zeta = 0.682$, stable and strongly damped).
+    \item \textbf{Spiral Mode:} $\lambda = +0.09608$ (Unstable, doubling time $t_2 \approx 7.22\,\text{s}$).
+    \item \textbf{Phugoid:} $\lambda = +0.00339 \pm 1.3367i$ ($\zeta = -0.00254$, very slightly unstable, doubling time $\approx 204.2\,\text{s}$).
+\end{enumerate}
+
+\begin{table}[H]
+\centering
+\caption{Summary of the aircraft dynamic modes.}
+\label{tab:mode_summary}
+\begin{tabular}{lccccc}
+\toprule
+Mode & $\sigma$ & $\omega$ & $\omega_n$ & $\zeta$ & Stability \\
+\midrule
+Roll subsidence & $-23.800$ & $0$ & $23.800$ & $1.000$ & Stable \\
+Dutch roll & $-1.536$ & $\pm13.029$ & $13.119$ & $0.117$ & Stable \\
+Short period & $-16.776$ & $\pm17.972$ & $24.583$ & $0.682$ & Stable \\
+Spiral & $+0.0961$ & $0$ & $0.0961$ & -- & Unstable \\
+Phugoid & $+0.00339$ & $\pm1.337$ & $1.337$ & $-0.00254$ & Very slightly unstable \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\end{document}
