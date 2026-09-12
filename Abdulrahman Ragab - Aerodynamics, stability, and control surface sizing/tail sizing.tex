@@ -55,8 +55,8 @@ To resolve simulation inertia errors and align the system CG with the target $x_
 \begin{itemize}
     \item \textbf{Main Wing:} $125\,\text{g}$ (at $X = 0.073\,\text{m}$)[cite: 1]
     \item \textbf{Fuselage and Hardware:} $134\,\text{g}$ (at $X = 0.08\,\text{m}$)
-    \item \textbf{Horizontal Tail (HT):} $18\,\text{g}$ (at $X = 0.376\,\text{m}$)
-    \item \textbf{Vertical Tail (VT):} $10\,\text{g}$ (at $X = 0.348\,\text{m}$)
+    \item \textbf{Horizontal Tail (HT):} $18\,\text{g}$ (at $X = 0.454\,\text{m}$)
+    \item \textbf{Vertical Tail (VT):} $10\,\text{g}$ (at $X = 0.448\,\text{m}$)
     \item \textbf{Battery:} $75\,\text{g}$ (at $X = 0.010\,\text{m}$)
     \item \textbf{Motor:} $28\,\text{g}$ (at $X = -0.050\,\text{m}$)
     \item \textbf{Avionics \& Electronics:} $124\,\text{g}$ (distributed around $X = 0.050\,\text{m}$ to $0.090\,\text{m}$)
@@ -103,7 +103,7 @@ Using the vertical tail volume coefficient relation alongside the main wing and 
 \begin{itemize}
     \item \textbf{Vertical Tail Area ($S_{VT}$):} 
     \begin{equation}
-        S_{VT} = \frac{V_{VT} \cdot S_w \cdot b_w}{L_{opt}} = \frac{0.04 \times 0.08\,\text{m}^2 \times 0.63\,\text{m}}{0.311\,\text{m}} \approx 0.00648\,\text{m}^2
+        S_{VT} = \frac{V_{VT} \cdot S_w \cdot b_w}{L_{opt}} = \frac{0.05 \times 0.08\,\text{m}^2 \times 0.63\,\text{m}}{0.311\,\text{m}} \approx 0.0081\,\text{m}^2
     \end{equation}
     
     \item \textbf{Vertical Tail Span ($b_{VT}$):} Derived using the selected optimal aspect ratio:
@@ -188,12 +188,12 @@ Based on the XFLR5 graphical results, the **$AR = 1.5$** configuration achieves 
 
 \begin{itemize}
     \item AR = 1.5
-    \item $b_{VT} = 0.099 m$
-    \item $S_{VT} = 6.48*10^{-3} m^2$
+    \item $b_{VT} = 0.11 m$
+    \item $S_{VT} = 8.1*10^{-3} m^2$
 \end{itemize}
 
 \section{Vertical Tail Taper Ratio Trade Study}
-To finalize the vertical tail geometry, a trade study was performed evaluating four distinct taper ratios ($\lambda = 0.4, 0.6, 0.8,$ and $1.0$) at $V = 20.0\,\text{m/s}$ using VLM2, keeping the fixed aspect ratio $AR = 1.5$ and surface area $S_{VT} = 0.006535\,\text{m}^2$.
+To finalize the vertical tail geometry, a trade study was performed evaluating four distinct taper ratios ($\lambda = 0.4, 0.6, 0.8,$ and $1.0$) at $V = 20.0\,\text{m/s}$ using VLM2, keeping the fixed aspect ratio $AR = 1.5$ and surface area $S_{VT} = 0.0081\,\text{m}^2$.
 
 Each configuration was rated on a $-2$ to $+2$ scale across key directional and structural criteria:
 \begin{itemize}
@@ -250,5 +250,41 @@ Structural Weight & 10\% & +1 & \textbf{+1} & 0 & -1 \\
 
 \subsection{Selection Conclusion}
 The **0.6 Taper Ratio** configuration achieves the maximum total weighted score ($+2.00$). XFLR5 simulation graphs confirm that the 0.6T variant provides the cleanest, most linear positive $C_{n\beta}$ slope and well-controlled side-slip rolling moments without high-frequency instabilities. Therefore, $\lambda = 0.6$ is conclusively selected as the final taper ratio for the vertical tail.
+
+
+\section*{Modification for Stability Analysis}
+
+The dynamic stability analysis of the aircraft was initiated following two major geometric modifications: first, increasing the wing dihedral angle to $7^\circ$ to enhance lateral stability, and second, adjusting the tail-to-wing spacing to $0.4\,\text{m}$ to improve tail effectiveness for both longitudinal and lateral stability. As a result of these modifications, the performance curves shown below were successfully obtained:
+
+\begin{figure}[htbp]
+    \centering
+    % First graph: Cl-beta
+    \begin{minipage}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{cl_beta.png} % Replace with actual filename
+        \caption{Rolling Moment vs. Sideslip ($Cl-\beta$)}
+        \label{fig:cl_beta}
+    \end{minipage}
+    \hfill
+    % Second graph: Cn-beta
+    \begin{minipage}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{cn_beta.png} % Replace with actual filename
+        \caption{Yawing Moment vs. Sideslip ($Cn-\beta$)}
+        \label{fig:cn_beta}
+    \end{minipage}
+    \hfill
+    % Third graph: Cm-alpha
+    \begin{minipage}[b]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{cm_alpha.png} % Replace with actual filename
+        \caption{Pitching Moment vs. Angle of Attack ($Cm-\alpha$)}
+        \label{fig:cm_alpha}
+    \end{minipage}
+    \caption{Aerodynamic stability curves after modifying the wing dihedral ($7^\circ$) and the tail-to-wing distance ($0.4\,\text{m}$).}
+    \label{fig:stability_graphs}
+\end{figure}
+
+
 
 \end{document}
