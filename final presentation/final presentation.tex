@@ -1,0 +1,582 @@
+\documentclass[12pt,a4paper]{article}
+
+% --- Packages ---
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{caption}
+
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={PADA Integrated Technical Report},
+}
+
+\lstdefinestyle{pythonstyle}{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{teal},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    breaklines=true,
+    frame=single,
+    showstringspaces=false
+}
+
+\begin{document}
+
+\title{\textbf{Powered Autonomous Delivery Aircraft (PADA)\\[0.5em] Integrated Technical Report}}
+\author{Lycans AeroDesign Team}
+\date{\today}
+\maketitle
+\tableofcontents
+\newpage
+
+% ==============================================================================
+% PART 1: AVIONICS & POWER SUBSYSTEM
+% ==============================================================================
+
+\section{Overview \& System Constraints Integration}
+The primary objective of the Avionics and Power Subsystem is to fulfill the Powered Autonomous Delivery Aircraft (PADA) operational requirements within strict physical limits. Based on the aerodynamic constraint analysis:
+\begin{itemize}
+    \item \textbf{Maximum Gross Weight ($W_{\text{max}}$):} $19.5\text{ oz} \approx 552.8\text{ g}$ ($5.421\text{ N}$).
+    \item \textbf{Wing Area ($S$):} $0.08\text{ m}^2$.
+    \item \textbf{Baseline Wing Loading ($W/S$):} $67.76\text{ N/m}^2$.
+\end{itemize}
+
+From the propulsion dynamic equations, the minimum takeoff Thrust-to-Weight ratio $(T/W)_{\text{TO}}$ is established at $0.38$. Applying a $20\%$ safety margin for motor/propeller efficiency losses yields a design target of static $(T/W) \ge 0.50$, corresponding to a minimum static thrust requirement of $T_{\text{req}} \ge 276.4\text{ g}$.
+
+\section{Baseline Design (Initial Configuration)}
+Initially, a baseline avionics configuration was evaluated using standard off-the-shelf components. Table~\ref{tab:baseline_inventory} summarizes the initial electrical inventory including the safety switch, active buzzer, payload camera, and airspeed sensor.
+
+\begin{table}[H]
+\centering
+\caption{Initial (Baseline) Electrical Components Inventory}
+\label{tab:baseline_inventory}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{@{}p{3.0cm} p{2.8cm} p{1.8cm} p{1.4cm} X@{}}
+\toprule
+\textbf{Component} & \textbf{Power / Rating} & \textbf{Price} & \textbf{Weight} & \textbf{Selected Model / Notes} \\ \midrule
+Battery            & 3S / 1300mAh (14.43Wh) & 1,000 EGP & 115 g & LiPo 3S 1300mAh 45C ($<100\text{ Wh}$) \\
+ESC                & 30A Cont. (40A Burst)  & 600 EGP   & 28 g  & 30A Brushless ESC with 5V/3A BEC \\
+Motor              & 180W / Max 18A         & 900 EGP   & 55 g  & Sunnysky X2212 KV1400 \\
+Flight Controller  & 5V / 500mA             & 2,250 EGP & 38 g  & Pixhawk 4 Mini / Matek H743 \\
+Receiver           & 5V / 100mA             & 750 EGP   & 8 g   & 900MHz Receiver (ExpressLRS) \\
+GPS                & 5V / 150mA             & 900 EGP   & 22 g  & Holybro Micro M8N GPS Module \\
+Telemetry          & 500mW / 5V             & 1,100 EGP & 18 g  & Telemetry Transceiver \\
+Servos (x5)        & 1.8 kg-cm Torque       & 750 EGP   & 45 g  & SG90 Micro Servos ($1\text{--}2\text{ kg}\cdot\text{cm}$) \\
+Airspeed Sensor    & 5V / 25mA              & 850 EGP   & 10 g  & Digital Pitot Tube Sensor Kit \\
+FPV / Payload Cam  & 5V / 200mA             & 650 EGP   & 12 g  & Micro FPV / Delivery Camera \\
+Buzzer \& E-Switch & 5V / Active Piezo      & 150 EGP   & 8 g   & Active Buzzer \& Safety Arming Switch \\ \midrule
+\textbf{Total}     & --                     & \textbf{9,900 EGP} & \textbf{359 g} & Leaves 193.8g for Airframe \\ \bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Optimization \& Trade-Off Analysis}
+While the initial configuration met all electrical and thrust demands, its cumulative mass of \textbf{359 g} consumed too much of the maximum gross weight limit ($552.8\text{ g}$). To resolve this, an avionics optimization trade study was conducted:
+\begin{enumerate}
+    \item \textbf{Battery Downsizing ($1300\text{ mAh} \rightarrow 850\text{ mAh}$):} Saving \textbf{40 g} while staying strictly under the $<100\text{ Wh}$ rule.
+    \item \textbf{Motor Sizing Adjustment ($2212 \rightarrow 2204$):} Saving \textbf{27 g} while preserving $(T/W) \approx 0.76$.
+    \item \textbf{ESC Optimization ($30\text{A} \rightarrow 20\text{A}$):} Saving \textbf{16 g} with a $42\%$ safety margin.
+    \item \textbf{Flight Controller Integration (Matek H743-WING):} Saving \textbf{8 g} and integrating internal power distribution and current sensing.
+\end{enumerate}
+
+\section{Optimized Final Design (Current Configuration)}
+Table~\ref{tab:optimized_inventory} presents the final electrical component inventory following the trade study reductions.
+\begin{table}[H]
+\centering
+\caption{Optimized (Final) Electrical Components Inventory}
+\label{tab:optimized_inventory}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{@{}p{3.0cm} p{2.8cm} p{1.8cm} p{1.4cm} X@{}}
+\toprule
+\textbf{Component} & \textbf{Power / Rating} & \textbf{Price} & \textbf{Weight} & \textbf{Selected Model / Rationale} \\ \midrule
+Battery            & 3S/850mAh (9.44Wh)     & 800 EGP   & 75 g  & Tattu LiPo 3S 850mAh 45C ($< 100\text{ Wh}$ rule) \\
+ESC                & 20A Cont. / 25A Burst  & 450 EGP   & 12 g  & BLHeli\_S 20A ESC with 5V BEC \\
+Motor              & KV2300 / Max 14A       & 650 EGP   & 28 g  & SunnySky X2204 KV2300 (Yields $T/W = 0.76$) \\
+Flight Controller  & 5V / 500mA             & 2,250 EGP & 30 g  & Matek H743-Wing (ArduPilot/MAVROS) \\
+Receiver           & 5V / 100mA             & 750 EGP   & 8 g   & ExpressLRS 900MHz Receiver (JST-GH) \\
+GPS                & 5V / 150mA             & 900 EGP   & 20 g  & Holybro Micro M8N GPS \\
+Telemetry Radio    & 500mW / 5V             & 1,100 EGP & 18 g  & Holybro Sik Telemetry Radio \\
+Servos (x5)        & 1.8 kg-cm Torque       & 750 EGP   & 45 g  & SG90 Micro Servos ($1\text{--}2\text{ kg}\cdot\text{cm}$) \\
+Airspeed Sensor    & 5V / 25mA              & 850 EGP   & 10 g  & MS4525DO Digital Pitot Sensor \\
+FPV / Payload Cam  & 5V / 200mA             & 650 EGP   & 12 g  & Caddx Ant / Micro FPV Camera \\
+Buzzer \& E-Switch & 5V / Active Piezo      & 150 EGP   & 8 g   & Matek Active Buzzer \& Safety Arming Switch \\ \midrule
+\textbf{Total}     & --                     & \textbf{9,300 EGP} & \textbf{266 g} & Leaves 286.8g for Airframe \\ \bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Detailed Power Budget and Flight Endurance Calculations}
+To mathematically prove the electrical feasibility and endurance of the optimized PADA system, the power and energy equations are structured as follows:
+
+\subsection{Total Battery Energy Capacity ($E_{\text{batt}}$)}
+Using the nominal voltage ($V_{\text{nom}} = 11.1\text{ V}$) and capacity ($C = 0.85\text{ Ah}$):
+$$E_{\text{batt}} = V_{\text{nom}} \times C = 11.1\text{ V} \times 0.85\text{ Ah} = 9.435\text{ Wh}$$
+This satisfies the project constraint of being strictly below $100\text{ Wh}$ and avoids high-voltage LiHV chemistries.
+
+\subsection{Maximum Continuous Current and Discharge Safety Check}
+The battery discharge rate is $45\text{C}$ with an $850\text{ mAh}$ ($0.85\text{ A}$) rating:
+$$I_{\text{max, discharge}} = C_{\text{rate}} \times \text{Capacity} = 45 \times 0.85\text{ A} = 38.25\text{ A}$$
+Since the maximum system current draw under full throttle does not exceed $14\text{ A}$ (motor peak $14\text{ A}$ + avionics baseline $\sim 0.8\text{ A}$), the battery operates well within its safe discharge threshold ($14\text{ A} < 38.25\text{ A}$).
+
+\subsection{Average System Current Draw ($I_{\text{total, avg}}$)}
+During normal cruise conditions, the motor draws an average of $5.5\text{ A}$, while the avionics suite draws an aggregate baseline current of $\approx 0.8\text{ A}$:
+$$I_{\text{total, avg}} = I_{\text{motor, cruise}} + I_{\text{avionics, baseline}} = 5.5\text{ A} + 0.8\text{ A} = 6.3\text{ A}$$
+
+\subsection{Estimated Flight Endurance ($T_{\text{flight}}$)}
+Applying an $80\%$ Depth of Discharge (DOD) factor to preserve battery longevity:
+$$T_{\text{flight}} = \left( \frac{\text{Capacity} \times \text{DOD}}{I_{\text{total, avg}}} \right) \times 60 = \left( \frac{0.85\text{ Ah} \times 0.80}{6.3\text{ A}} \right) \times 60 \approx 6.47\text{ minutes}$$
+This provides a sufficient operational window for autonomous mission execution, waypoint navigation, obstacle avoidance, and payload deployment.
+
+\section{Wiring Topology, Exact Port Mapping, and Connectors}
+Table~\ref{tab:wiring_mapping} outlines the precise physical connections, wire types, gauges (AWG), and Matek H743-WING port mapping matching the schematics architecture cleanly within the page limits.
+
+\begin{table}[H]
+\centering
+\caption{Matek H743-WING Port Mapping and Wiring Specifications}
+\label{tab:wiring_mapping}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{@{}p{3.2cm} p{3.5cm} p{2.8cm} X@{}}
+\toprule
+\textbf{Subsystem Device} & \textbf{Controller Port} & \textbf{Wire Type \& Gauge} & \textbf{Connection Notes / Safety} \\ \midrule
+Battery to PDB/ESC & Battery Pads ($+BAT/-BAT$) & 14 AWG Silicone Wire & Main power input with XT60 \& Cap ($470\mu F / 35V$) \\
+Brushless Motor & ESC Motor Outputs (U, V, W) & 16 AWG Silicone Wire & Secure bullet connectors soldered to ESC \\
+ESC Signal & ESC / S1 PWM Pad + GND + 5V & 26/24 AWG PWM / Silicone & Ground, 5V BEC, and S1 PWM signal \\
+GPS Module & UART2 (TX2/RX2/5V/GND) & 28 AWG JST-GH 4-pin & Connected via JST-GH 4Pins to UART2 \\
+Compass (Mag) & I2C1 (CL1/DA1/5V/GND) & 28 AWG JST-GH 4-pin & Connected via JST-GH 4Pins to I2C1 bus \\
+900MHz Receiver & UART1 (TX1/RX1/5V/GND) & 28 AWG JST-GH 4-pin & Connected via JST-GH 4Pins to UART1 \\
+Telemetry Radio & UART7 (TX7/RX7/5V/GND) & 28 AWG JST-GH 4-pin & Connected via JST-GH 4Pins to UART7 \\
+Servo 1 (Left Aileron) & PWM Output Pad S2 & 24 AWG Silicone Wire & Direct PWM control signal \\
+Servo 2 (Right Aileron) & PWM Output Pad S3 & 24 AWG Silicone Wire & Direct PWM control signal \\
+Servo 3 (Elevator) & PWM Output Pad S4 & 24 AWG Silicone Wire & Direct PWM control signal \\
+Servo 4 (Rudder) & PWM Output Pad S5 & 24 AWG Silicone Wire & Direct PWM control signal \\
+Servo 5 (Flaps) & PWM Output Pad S6 & 24 AWG Silicone Wire & Direct PWM control signal \\
+Payload Camera & Video IN (VIN) + 5V/GND & 28 AWG Shielded Coaxial & Real-time FPV feed and visual target \\
+Buzzer \& E-Switch & BUZ, GND, LED, Safety Pads & 28 AWG JST Connectors & Mandatory safety switch and buzzer \\ \bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Summary of Optimization Impact}
+Through this engineering optimization, the total avionics mass was reduced from \textbf{359 g to 266 g} (a \textbf{25.9\% mass reduction}), saving \textbf{93 g} in total. This increases the allowable airframe structural mass allocation to \textbf{286.8 g}, ensuring sufficient structural integrity without exceeding the $552.8\text{ g}$ maximum gross weight limit.
+
+\section{Master Avionics Wiring Schematic}
+Figure~\ref{fig:schematic} displays the integrated electrical pinout, power bus routing, and sensor bus topology for the PADA UAV system using the Matek H743-WING controller matching the exact routing layout.
+
+
+
+\newpage
+% ==============================================================================
+% PART 2: AUTONOMOUS SOFTWARE & COMPUTER VISION PIPELINE
+% ==============================================================================
+
+\section{Detailed Design}
+
+\subsection{Autonomous System and Software}
+
+This section explains the design choices I made while building my
+perception node, and why I wrote the code the way I did.
+
+\subsubsection{Node and Topic Documentation}
+My perception pipeline is implemented as a single ROS~2 node,
+\texttt{perception\_publisher\_node}, which subscribes to no topics and
+publishes on two:
+
+\begin{itemize}
+    \item \texttt{flight\_movement\_command} (\texttt{std\_msgs/String}):
+    carries obstacle-avoidance commands -- \texttt{"MOVE LEFT"},
+    \texttt{"MOVE RIGHT"}, \texttt{"MOVE DOWN"}, or \texttt{"CONTINUE"}.
+    \item \texttt{flight\_mode\_command} (\texttt{std\_msgs/String}):
+    carries flight-mode commands triggered by visual target recognition.
+\end{itemize}
+
+I chose \texttt{std\_msgs/String} over a custom message type because the
+command vocabulary is small and fixed. A custom message would only be
+worth the added complexity if I needed to send extra structured data
+alongside each command, such as an estimated distance or confidence
+score, which wasn't necessary at this stage.
+
+\subsubsection{Camera Source Fallback Chain}
+I didn't want this code to only work on my own machine with my own
+phone connected. The camera setup tries my phone's live RTSP stream
+first, and falls back to a normal local webcam if that stream is
+unavailable. This makes the node testable by anyone with basic camera
+hardware, without requiring my specific network setup, while the live
+phone stream remains the actual source used during our real
+demonstration.
+
+\begin{lstlisting}[style=pythonstyle, caption={Camera fallback: phone stream first, local webcam second.}]
+self.cap = cv2.VideoCapture(src, cv2.CAP_FFMPEG)
+self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+
+if not self.cap.isOpened():
+    self.get_logger().warn(f"Phone stream {CAMERA_SOURCE} unavailable. Trying default webcam (0)...")
+    self.cap = cv2.VideoCapture(0)
+\end{lstlisting}
+
+\subsubsection{Reducing Video Buffer Latency}
+When streaming video over a network, frames can build up in the
+background and create a noticeable delay. To make sure the aircraft
+reacts to what the camera sees right now instead of a few seconds ago,
+I set OpenCV's buffer size to 1. In the main loop, I grab the latest
+frame using a 4-frame skip loop so fresh images are processed at
+15~Hz. If a frame fails to load, a warning is logged and the function
+exits early to keep the node from crashing.
+
+\begin{lstlisting}[style=pythonstyle, caption={Grabbing the video frame and dropping buffer lag in perception\_publisher\_node.py.}]
+for _ in range(4):
+    if not self.cap.grab():
+        break
+ret, frame = self.cap.retrieve()
+if not ret:
+    self.get_logger().warn("Failed to grab frame from video source", throttle_duration_sec=3.0)
+    return
+\end{lstlisting}
+
+\subsubsection{Color Space Selection}
+I converted every incoming BGR video frame to the HSV color space
+before doing any detection. RGB is tricky because a color's brightness
+is mixed into all three channels, making an orange color look
+completely different under bright sun versus a shadow. HSV separates
+color (hue) from brightness, so my thresholds stay stable under
+changing lighting conditions.
+
+\subsubsection{Color Selection}
+Three distinct colors were picked that are far apart on the HSV hue
+wheel: orange for obstacles, green for the LOITER mode target, and blue
+for the MANUAL mode target. Spacing out the colors prevents the system
+from confusing an obstacle for a flight command. (LOITER and MANUAL
+modes were picked according to my teammate's preference for the
+target-to-mode mapping.)
+
+\subsubsection{Minimum Area Filtering}
+Cameras usually pick up small visual noise or stray background
+reflections. To ignore small blobs, I required any detected shape to
+cover a minimum portion of the screen before treating it as a real
+detection (0.2\% of total frame area for obstacles, and 0.3\% for
+command targets).
+
+\subsubsection{Proximity Filtering for the Obstacle}
+Blob size alone isn't enough to confirm if an obstacle is close, so I
+added a height check: the bounding box height must be at least 15\% of
+the total frame height. This acts as a simple proximity check so the
+system only reacts when an obstacle is close enough to be in the way.
+
+\begin{lstlisting}[style=pythonstyle, caption={Filtering out small noise and verifying obstacle proximity height.}]
+if cv2.contourArea(largest) > (h * w * 0.002):
+    x, y, bw, bh = cv2.boundingRect(largest)
+    if (bh / h) >= PROXIMITY_HEIGHT_FRAC:
+        seen_this_frame = True
+\end{lstlisting}
+
+\subsubsection{Debounce Counter State Logic}
+To stop the aircraft from jittering when a frame drops or flickers, I
+used detection counters. Two positive frames in a row are required to
+confirm a hazard (\texttt{CONFIRM\_NEEDED = 2}), but three clean frames
+in a row are required to clear it (\texttt{CLEAR\_NEEDED = 3}). Making
+it harder to clear a hazard than to confirm one is a deliberate safety
+choice: it's safer to stay in an avoidance state a moment longer than
+to stop dodging too early.
+
+\begin{lstlisting}[style=pythonstyle, caption={Asymmetric debounce counters to confirm and clear hazards.}]
+if seen_this_frame:
+    self.hazard_seen_count += 1
+    self.hazard_miss_count = 0
+else:
+    self.hazard_miss_count += 1
+    self.hazard_seen_count = 0
+
+if self.hazard_seen_count >= CONFIRM_NEEDED:
+    self.hazard_confirmed = True
+if self.hazard_miss_count >= CLEAR_NEEDED:
+    self.hazard_confirmed = False
+\end{lstlisting}
+
+\subsubsection{Combined Shape and Geometric Verification}
+To prevent background objects from accidentally triggering a mode
+change, I check shape geometry on top of color masking. Green targets
+must be circular (circularity $\ge 0.65$) to trigger \texttt{LOITER},
+while blue targets must be square-ish (aspect ratio between 0.7 and
+1.3) to trigger \texttt{MANUAL}. Requiring both the right color and the
+right shape avoids false triggers from a similarly-colored object that
+doesn't share the correct geometry.
+
+\begin{lstlisting}[style=pythonstyle, caption={Shape verification for Green Circle (LOITER) and Blue Square (MANUAL).}]
+circularity = (4 * np.pi * area) / (peri ** 2)
+aspect_ratio = bw / float(bh)
+
+if (shape_type == "circle" and circularity >= 0.65) or \
+   (shape_type == "square" and 0.7 <= aspect_ratio <= 1.3):
+    seen_target = True
+\end{lstlisting}
+
+\subsubsection{Steering Zone Boundaries}
+When an obstacle is confirmed, I pick a dodge direction based on where
+its center sits across the screen width. If it is in the left 40\%, the
+system dodges right. If it is in the right 40\%, it dodges left. If it
+is in the middle 20\%, it tells the vehicle to move down instead, since
+a lateral dodge is not a safe option for an obstacle directly ahead.
+
+\begin{lstlisting}[style=pythonstyle, caption={Deciding dodge directions using screen position.}]
+if cx < w * 0.4:
+    obstacle_cmd = "MOVE RIGHT"
+elif cx > w * 0.6:
+    obstacle_cmd = "MOVE LEFT"
+else:
+    obstacle_cmd = "MOVE DOWN"
+\end{lstlisting}
+
+\subsubsection{Publish-on-Change Communication}
+The node runs 15 times per second, but publishing the exact same
+message every frame wastes bandwidth and floods the topic with
+redundant data. I track the last command sent and only publish a new
+message on \texttt{flight\_movement\_command} or
+\texttt{flight\_mode\_command} when the output command actually changes.
+
+\subsubsection{Computational Efficiency}
+I measured performance using a standalone test script running the same
+detection logic against the live phone camera feed, independent of
+ROS~2, logging frame timing and system resource usage. Over a
+representative test run:
+
+\begin{itemize}
+    \item \textbf{Average frame rate:} approximately 30 FPS, roughly
+    double the 15~Hz processing loop rate used in the deployed ROS~2
+    node, indicating the detection pipeline itself is not the
+    bottleneck.
+    \item \textbf{CPU usage:} 35--39\% of a single core on standard
+    laptop hardware.
+    \item \textbf{Memory usage:} a stable 135.5~MB throughout the test,
+    with no observed growth over time, indicating no memory leak in the
+    detection loop.
+\end{itemize}
+
+These results confirm the pipeline runs comfortably within real-time
+constraints, leaving significant headroom for ROS~2 middleware and
+MAVROS communication running concurrently on the same machine.
+
+\subsection{Demonstration Evidence and Visual Logs}
+
+To verify detection performance, a screen recording is archived on
+Google Drive:
+
+\begin{itemize}
+    \item \textbf{System Video Demonstration:} \href{https://drive.google.com/file/d/13cAQ1OQS0qfvj-SdfDICUSn8_SfnbNMW/view?usp=sharing}{Google Drive -- Autonomous System Screen Recording}
+\end{itemize}
+
+\section{Bonus Task 2 (YOLO Training)}
+
+Instead of relying on fixed color masks, I integrated a custom-trained
+YOLO model to recognize a balloon target under changing light and
+angles. Color masking only recognizes exactly the colors and shapes it
+is told to look for; a trained model doesn't need a hand-tuned color
+range at all.
+
+\subsubsection{Model Training and Metrics}
+I trained a YOLO11n model using Ultralytics on a balloon dataset from
+Kaggle, over 30 epochs on CPU (about 8.95 hours). On my validation set
+of 109 images, it scored a precision of 0.937, recall of 0.897, and
+mAP50 of 0.937. I chose the smallest YOLO11 variant since my target
+hardware is a CPU-only laptop with no GPU.
+
+\begin{lstlisting}[style=pythonstyle, caption={Loading the trained model once at startup.}]
+self.model = YOLO(MODEL_PATH)
+\end{lstlisting}
+
+\subsubsection{Node and Topic Documentation}
+This pipeline runs as its own node, \texttt{perception\_yolo\_node},
+publishing to its own topic, \texttt{balloon\_tracking\_command}
+(\texttt{std\_msgs/String}), kept separate from the main pipeline's
+topics since it is a distinct detection method.
+
+\subsubsection{Reused Camera and Reliability Patterns}
+Rather than building new reliability logic, I reused the same
+phone-stream-then-webcam fallback and the same seen/miss debounce
+counters from my main pipeline.
+
+\begin{lstlisting}[style=pythonstyle, caption={Same debounce pattern as the main pipeline, applied to grid sectors.}]
+if detected_sector is not None:
+    self.seen_count += 1
+    self.miss_count = 0
+else:
+    self.miss_count += 1
+    self.seen_count = 0
+
+if self.seen_count >= CONFIRM_NEEDED:
+    self.confirmed_sector = detected_sector
+if self.miss_count >= CLEAR_NEEDED:
+    self.confirmed_sector = None
+\end{lstlisting}
+
+\subsubsection{Grid Partitioning and Flight Command Logic}
+The camera view is split into a $3 \times 3$ grid. Only the four corner
+sectors trigger a command -- top corners trigger \texttt{RTL}, bottom
+corners trigger \texttt{AUTO}. Any middle sector produces no command,
+since its position doesn't clearly indicate a direction.
+
+\begin{lstlisting}[style=pythonstyle, caption={Triggering flight modes based on grid corner sectors.}]
+if self.confirmed_sector == 'top_left' or self.confirmed_sector == 'top_right':
+    command = 'RTL'
+elif self.confirmed_sector == 'bottom_left' or self.confirmed_sector == 'bottom_right':
+    command = 'AUTO'
+\end{lstlisting}
+
+\subsubsection{Control Node Implementation}
+To process automated flight commands derived from the YOLO perception pipeline, a dedicated ROS~2 subscriber node, \texttt{yolo\_flight\_control\_node}, was implemented using \texttt{rclpy}. The node subscribes to the \texttt{balloon\_tracking\_command} topic to receive real-time mode transition instructions based on visual balloon sector tracking.
+
+To optimize message processing and avoid redundant state executions, the node tracks the incoming flight mode state and processes updates only when a new transition command is detected.
+
+
+
+\subsubsection{Demonstration Evidence}
+A screen recording of the YOLO-based balloon detection running live is
+archived on Google Drive:
+
+\begin{itemize}
+    \item \textbf{YOLO Balloon Detection Demonstration:} \href{https://drive.google.com/file/d/1mZbPPHK5tijk_HDhvavXxqVVk-Z9NiWH/view?usp=sharing}{Google Drive -- YOLO Balloon Tracking Screen Recording}
+\end{itemize}
+
+\subsubsection{Control Node Implementation}
+To process automated flight commands derived from the YOLO perception pipeline, a dedicated ROS~2 subscriber node, \texttt{yolo\_flight\_control\_node}, was implemented using \texttt{rclpy}. The node subscribes to the \texttt{balloon\_tracking\_command} topic to receive real-time mode transition instructions based on visual balloon sector tracking.
+
+To optimize message processing and avoid redundant state executions, the node tracks the incoming flight mode state and processes updates only when a new transition command is detected.
+
+
+\section{ROS 2 Architecture, MAVROS \& SITL Integration}
+
+\subsection{ROS 2 Architecture}
+
+The ROS 2 communication layer connects real-time computer vision processing decisions from the \texttt{pada\_vision} perception package to the simulated fixed-wing aircraft controller. The primary decision-making control node, \texttt{node1}, was developed in Python using \texttt{rclpy}. It ingests target classifications and hazard detection data from the perception nodes, monitors aircraft spatial orientation and flight status, and interfaces directly with the flight controller via MAVROS topics and service calls.
+
+The core ROS 2 and MAVROS interfaces integrated into \texttt{node1} are outlined in Table~\ref{tab:ros_interfaces}.
+
+\begin{table}[H]
+\centering
+\caption{Main ROS 2 and MAVROS interfaces utilized by the \texttt{node1} control node.}
+\label{tab:ros_interfaces}
+\small
+\begin{tabular}{p{0.34\textwidth} p{0.16\textwidth} p{0.40\textwidth}}
+\toprule
+\textbf{Interface} & \textbf{Type} & \textbf{Purpose} \\
+\midrule
+\texttt{/mavros/state} & Topic & Monitors the aircraft operational state and active flight mode. \\
+
+\texttt{/mavros/local\_position/pose} & Topic & Provides real-time local aircraft frame coordinates. \\
+
+\texttt{/flight\_movement\_command} & Topic & Receives directional hazard evasion vector commands. \\
+
+\texttt{/flight\_mode\_command} & Topic & Receives visual target flight-mode override commands. \\
+
+\texttt{/mavros/set\_mode} & Service & Requests flight-mode transitions from the flight controller. \\
+
+\texttt{/mavros/setpoint\_position/local} & Topic & Publishes relative spatial target coordinates during GUIDED mode. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The topology of the active ROS 2 computational graph was validated using \texttt{rqt\_graph}. This confirmed proper node connections, topic subscriptions, and service bindings between the \texttt{pada\_vision} nodes, \texttt{node1}, and MAVROS wrappers.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{RQT GRAPH.png}
+    \caption{ROS 2 computational graph showing active nodes, publishers, and MAVROS links.}
+    \label{fig:rqt_graph}
+\end{figure}
+
+\subsection{MAVROS and SITL Integration}
+
+MAVROS serves as the bridge between ROS 2 nodes and the ArduPilot Software-in-the-Loop (SITL) fixed-wing flight simulator. By abstracting the low-level MAVLink protocol into ROS 2 messaging structures, the system streams continuous flight status telemetry and issues high-level navigational overrides without requiring raw MAVLink packet construction.
+
+Flight states are continuously validated via \texttt{/mavros/state}, while global mode changes are triggered through the \texttt{/mavros/set\_mode} service. Local frame coordinates ($x, y, z$) are updated through subscriptions to \texttt{/mavros/local\_position/pose}.
+
+The end-to-end data pipeline is structured as:
+
+\begin{center}
+\textbf{ROS 2 (\texttt{pada\_vision} / \texttt{node1})}
+$\rightarrow$
+\textbf{MAVROS}
+$\rightarrow$
+\textbf{ArduPilot SITL}
+$\rightarrow$
+\textbf{QGroundControl}
+\end{center}
+
+QGroundControl (QGC) was integrated into the simulation environment to provide real-time telemetry verification, mission tracking, and visual confirmation of mode changes initiated by ROS 2 decision events.
+
+\subsection{Command Integration}
+
+The decision node processes two distinct streams of operational commands from the vision pipeline.
+
+For \textbf{hazard detection and spatial evasion}, the system issues relative directional displacement vectors over \texttt{/flight\_movement\_command}:
+
+\begin{center}
+\texttt{MOVE LEFT}, \quad
+\texttt{MOVE RIGHT}, \quad
+\texttt{MOVE DOWN}
+\end{center}
+
+
+
+Upon receiving an evasion vector, \texttt{node1} calculates relative offsets from the aircraft's current local position, publishes local setpoints to \texttt{/mavros/setpoint\_position/local}, and transitions the flight mode to GUIDED. For example, a \texttt{MOVE RIGHT} instruction increments the local $x$-axis target by 10 units. 
+
+When the perception pipeline flags the hazard zone as clear via the \texttt{CONTINUE} command, the node clears temporary position offsets and requests AUTO mode to resume the pre-programmed waypoints.
+
+For \textbf{visual target identification}, the system directly triggers flight-mode transitions. The mapping applied during flight verification is summarized in Table~\ref{tab:target_modes}.
+
+\begin{table}[H]
+\centering
+\caption{Visual target classification to ArduPilot flight-mode mapping.}
+\label{tab:target_modes}
+\begin{tabular}{p{0.45\textwidth} p{0.30\textwidth}}
+\toprule
+\textbf{Visual Target Class} & \textbf{Triggered Flight Mode} \\
+\midrule
+Green circle & LOITER \\
+Blue square & MANUAL \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Target classification signals trigger \texttt{node1} to execute synchronous calls against the \texttt{/mavros/set\_mode} service to switch modes on the flight controller.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{TARGET DETECTION.png}
+    \caption{Visual target identification test showing perception output, node log execution, and mode change in QGroundControl.}
+    \label{fig:target_detection}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{HAZARD DETECTION.png}
+    \caption{Hazard avoidance test demonstrating movement command reception, setpoint generation, and flight state modification.}
+    \label{fig:hazard_detection}
+\end{figure}
+
+\subsection{Testing and Limitations}
+
+Simulation testing verified end-to-end ROS 2--MAVROS messaging and confirmed reliable execution of automated flight-mode transitions. However, local position setpoint control during GUIDED mode hazard avoidance exhibited unexpected behaviors in SITL testing: although the aircraft successfully switched to GUIDED mode, spatial position updates published to MAVROS were not accepted by the ArduPilot fixed-wing controller as valid trajectory targets.
+
+An alternative rally-point detour strategy was also evaluated. During execution, the aircraft briefly initiated Return-to-Launch (RTL) before reverting to AUTO mode; however, rather than maintaining its active waypoint route, the controller prioritized direct trajectory alignment toward the landing waypoint. This behavior is likely linked to fixed-wing navigation parameters in ArduPilot SITL rather than a defect in the ROS 2 node architecture.
+
+An automated timeout-based recovery strategy was evaluated to handle unacknowledged GUIDED mode states (returning to AUTO after a 3-second hold). This was ultimately omitted from the final node build because the perception pipeline operates on state-change events rather than continuous frame streams; implementing a simple timeout risk incorrectly interrupting valid evasion maneuvers.
+
+Consequently, the current system successfully demonstrates robust ROS 2 software integration, MAVROS message handling, and vision-driven mode control for the PADA system, with local trajectory execution under GUIDED mode slated for future control parameter tuning.
+
+\end{document}
