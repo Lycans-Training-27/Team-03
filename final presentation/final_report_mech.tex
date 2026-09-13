@@ -1,0 +1,284 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\geometry{a4paper, margin=1in}
+
+\title{\textbf{Powered Autonomous Delivery Aircraft (PADA)}\\ \large Final Project Technical Report}
+\author{\textbf{Lycans AeroDesign Team}}
+\date{September 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{Team3}
+
+\end{Team3}
+
+\newpage
+\tableofcontents
+\newpage
+
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\geometry{a4paper, margin=1in}
+
+\begin{document}
+
+\section{Conceptual Design}
+
+\subsection{Mission Requirements and Design Constraints}
+The primary design goal for the Powered Autonomous Delivery Aircraft (PADA) is to carry out an autonomous delivery mission while strictly adhering to physical, aerodynamic, and structural constraints \cite{1, 2}. The governing design constraints for the system are defined as follows:
+
+\begin{itemize}
+    \item \textbf{Maximum Wingspan ($b_{\text{max}}$):} Restricted to \textbf{25 inches} (with a maximum landing gear width limit of 20 inches) \cite{2}.
+    \item \textbf{Maximum Gross Weight ($W_{\text{max}}$):} Capped at \textbf{19.5 oz ($\approx 552.8\text{ g} / 5.421\text{ N}$)} including all avionics and structural components \cite{1, 2}.
+    \item \textbf{Wing Planform Area ($S$):} Standardized at \textbf{$0.08\text{ m}^2$}, resulting in a baseline wing loading ($W/S$) of \textbf{$67.76\text{ N/m}^2$} \cite{1, 5}.
+    \item \textbf{Payload Specification:} An external empty Pepsi can secured and released via a dedicated payload release mechanism \cite{2}.
+    \item \textbf{Battery \& Energy Limit:} Total electrical energy aboard the aircraft must remain strictly \textbf{$\le 100\text{ Wh}$} \cite{1, 2}.
+    \item \textbf{Stability \& Control:} The aircraft must exhibit static and dynamic stability across longitudinal, lateral, and directional axes \cite{2, 3}.
+\end{itemize}
+
+\subsection{Initial Aircraft Configurations Considered}
+During the initial design phase, multiple conventional and non-conventional UAV layouts were evaluated against payload delivery feasibility, structural efficiency, and ease of component integration:
+
+\begin{itemize}
+    \item \textbf{Conventional Tractor Monoplane (Selected Baseline):} Preferred for high propeller efficiency, straightforward longitudinal trimming, and optimal mass distribution for a nose-mounted motor combined with an external ventral payload bay.
+    \item \textbf{Twin-Boom Pusher Configuration:} Evaluated to clear the forward field of view for optical sensors; however, it was discarded due to structural mass penalties from twin booms exceeding the $W_{\text{max}}$ budget of $552.8\text{ g}$ \cite{1}.
+    \item \textbf{High-Wing Placement:} Chosen over low-wing concepts to ensure high lateral stability (pendulum effect) and maximum ground clearance for the external payload release mechanism during landing operations.
+\end{itemize}
+
+\subsection{Selected Configuration, Layout, and Airfoil Selection}
+
+\subsubsection{Airfoil Selection Trade Study}
+A formal decision matrix was conducted to select the optimal wing profile among three candidate airfoils evaluated at $Re = 200,000$ using XFLR5 \cite{3, 4}: \textbf{E423}, \textbf{GOE165}, and \textbf{S1223} \cite{3}. The selection criteria and weightings were defined as: $C_{L,\text{max}}$ ($W_1 = 0.35$), $(L/D)_{\text{max}}$ ($W_2 = 0.25$), $C_{D,\text{min}}$ ($W_3 = 0.20$), and $C_{m0}$ ($W_4 = 0.20$) \cite{4, 5}.
+
+\begin{table}[h!]
+\centering
+\caption{Airfoil Selection Decision Matrix ($Re = 200,000$)}
+\label{tab:airfoil_trade_study}
+\begin{tabular}{l c ccc ccc}
+\toprule
+& & \multicolumn{3}{c}{\textbf{Raw Ratings ($s_{ij}$)}} & \multicolumn{3}{c}{\textbf{Weighted Scores ($W_i \cdot s_{ij}$)}} \\
+\cmidrule(lr){3-5} \cmidrule(lr){6-8}
+\textbf{Parameter} & \textbf{Weight ($W_i$)} & \textbf{E423} & \textbf{GOE165} & \textbf{S1223} & \textbf{E423} & \textbf{GOE165} & \textbf{S1223} \\
+\midrule
+$C_{L,\text{max}}$  & 0.35 & 0  & -1 & +1 & 0.00  & -0.35 & +0.35 \\
+$C_{D,\text{min}}$  & 0.20 & -1 & +1 & 0  & -0.20 & +0.20 & 0.00  \\
+$(L/D)_{\text{max}}$ & 0.25 & +1 & -1 & 0  & +0.25 & -0.25 & 0.00  \\
+$C_{m0}$            & 0.20 & 0  & +1 & -1 & 0.00  & +0.20 & -0.20 \\
+\midrule
+\textbf{Total Score ($S_j$)} & \textbf{1.00} & -- & -- & -- & \textbf{+0.05} & \textbf{-0.20} & \textbf{+0.15} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The \textbf{Selig S1223} achieved the highest total score (+0.15) and was selected as the wing profile to maximize takeoff performance and high-lift capabilities under tight wing loading constraints \cite{3, 5}.
+
+\subsubsection{Wing Taper Ratio Selection}
+Evaluating taper ratios ($\lambda$) at $V_{\text{cruise}} = 20\text{ m/s}$ in XFLR5 demonstrated that \textbf{$\lambda = 0.6$} provided optimal aerodynamic performance, yielding a maximum lift-to-drag ratio ($(L/D)_{\text{max}} = 14.25$) alongside a strong negative pitching moment slope ($\partial C_m / \partial \alpha$) \cite{3}.
+
+\subsection{Major Design Trade-offs and Justification}
+\begin{enumerate}
+    \item \textbf{Airfoil High-Lift vs. Pitching Moment ($S1223$ vs. Trim Drag):} Although the S1223 induces a large negative pitching moment ($C_{m0} = -0.2716$), its superior maximum lift coefficient ($C_{L,\text{max}} = 2.2314$) is essential for short takeoff ground rolls \cite{3, 4}. The high pitching moment is balanced by sizing a horizontal tail volume ratio of $V_{\text{HT}} = 0.7$ with an optimal tail arm of $L_{\text{opt}} = 0.311\text{ m}$ \cite{3}.
+    \item \textbf{Avionics Mass vs. Structural Margin Optimization:} Initial baseline electrical configurations (3S 1300 mAh battery) totaled $359\text{ g}$, leaving only $193.8\text{ g}$ for the airframe \cite{1}. Downsizing to an \textbf{850 mAh LiPo} reduced mass by \textbf{$40\text{ g}$}, providing necessary structural weight allowance while operating safely within the $<100\text{ Wh}$ limit \cite{1, 2}.
+\end{enumerate}
+
+
+
+\section{Preliminary Design}
+
+\subsection{Propulsion Constraint Analysis and Sizing}
+Based on $W_{\text{max}} = 19.5\text{ oz} \approx 5.421\text{ N}$ and wing area $S = 0.08\text{ m}^2$ ($b = 0.635\text{ m}$), operational wing loading is calculated as $W/S = 67.76\text{ N/m}^2$ \cite{1, 4}. Evaluating flight constraint equations yields minimum thrust-to-weight targets: $(T/W)_{\text{Climb}} \approx 0.22$ and $(T/W)_{\text{TO}} \approx 0.38$ for an $8\text{ m}$ ground roll \cite{4}. Applying a 20\% safety margin for efficiency losses sets the required static performance at $(T/W)_{\text{req}} \ge 0.50$ ($T_{\text{req}} \ge 276.4\text{ g}$) \cite{4}. 
+
+Tail and control surfaces were sized using volume coefficient methods ($V_{\text{HT}}, V_{\text{VT}}$) and historical ratios \cite{2}. Horizontal Tail (HT) trade study evaluated taper options ($0.4T$--$1.0T$), selecting $0.6T$ for optimal balance between aerodynamic efficiency and static stability slope ($C_{m\alpha}$) \cite{3}. Primary control surfaces (ailerons, elevator, rudder) were dimensioned and integrated into the CAD assembly \cite{2}.
+
+\subsection{Mass Budget and CG Distribution}
+Component mass breakdown yields a baseline total system mass of $514\text{ g}$ (well within the $552.8\text{ g}$ ceiling), establishing an initial Center of Gravity at $X_{\text{CG}} \approx 0.068\text{ m}$ \cite{3}:
+
+\begin{table}[h!]
+\centering
+\caption{System Mass Budget and Longitudinal CG Breakdown}
+\label{tab:mass_budget}
+\begin{tabular}{l c c || l c c}
+\toprule
+\textbf{Component} & \textbf{Mass (g)} & \textbf{$X$-Loc (m)} & \textbf{Component} & \textbf{Mass (g)} & \textbf{$X$-Loc (m)} \\
+\midrule
+Main Wing       & 125 & 0.073  & Motor               & 28  & -0.050 \\
+Fuselage \& H/W & 134 & 0.080  & Avionics \& Elect.  & 124 & 0.050--0.090 \\
+Horiz. Tail (HT)& 18  & 0.454  & Battery (850 mAh)   & 75  & 0.010 \\
+Vert. Tail (VT) & 10  & 0.448  & \textbf{Total System}& \textbf{514 g} & \textbf{$\sim 0.068\text{ m}$} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Aerodynamic Modeling and Stability (AVL / XFLR5)}
+The geometric model was evaluated in AVL at $V = 20.0\text{ m/s}$ ($Re \approx 200,000$) to verify trim performance and dynamic stability derivatives \cite{3}. At the trimmed operating point ($\alpha = -8.303^\circ$), AVL yielded $C_L = 0.25723$, $C_D = 0.01696$ ($C_{Di} = 0.016958$), and span efficiency $e = 0.2679$ \cite{3}. Stability derivative analysis confirmed static longitudinal stability ($C_{m\alpha} < 0$) and stable dynamic modes, validating the configuration prior to detailed assembly \cite{2, 3}.
+
+
+\section{Detailed Design}
+
+\subsection{Aircraft Geometry and Structural Assembly}
+The aircraft geometry was designed within the strict physical constraints defined for the Powered Autonomous Delivery Aircraft (PADA) project. The wing planform utilizes a low aspect ratio configuration ($AR = 5.04$) with a uniform chord distribution ($c = 0.20\text{ m}$).
+
+The structural layout incorporates balsa wood ribs and carbon fiber main spars for high bending stiffness, integrated with an Expanded Polypropylene (EPP) fuselage structure and 3D-printed payload mounting components.
+
+\begin{table}[h!]
+\centering
+\caption{PADA Aircraft Geometry Parameters}
+\label{tab:aircraft_geometry}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Parameter} & \textbf{Value} & \textbf{Unit} \\
+\midrule
+Wingspan ($b$) & 25.0 & in ($0.635\text{ m}$) \\
+Wing Area ($S$) & 0.08 & $\text{m}^2$ \\
+Root Chord ($c_{root}$) & 0.20 & m \\
+Tip Chord ($c_{tip}$) & 0.20 & m \\
+Aspect Ratio ($AR$) & 5.04 & - \\
+Airfoil Section & Selig S1223 & - \\
+Horizontal Tail Area ($S_{ht}$) & 0.016 & $\text{m}^2$ \\
+Vertical Tail Area ($S_{vt}$) & 0.009 & $\text{m}^2$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Final Mass Estimation and CG Location}
+The overall mass budget was constrained below the maximum threshold of $W_{max} = 552.8\text{ g}$. The component breakdown and Center of Gravity (CG) locations measured relative to the wing leading edge (LE) are detailed in Table~\ref{tab:mass_breakdown}.
+
+\begin{table}[h!]
+\centering
+\caption{Final Mass Estimation and Center of Gravity Location}
+\label{tab:mass_breakdown}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Component / Subsystem} & \textbf{Mass (g)} & \textbf{CG Position $X$ (m)} \\
+\midrule
+Main Wing Assembly & 125.0 & 0.073 \\
+Fuselage and Structural Hardware & 134.0 & 0.080 \\
+Horizontal Tail (HT) & 18.0 & 0.454 \\
+Vertical Tail (VT) & 10.0 & 0.448 \\
+LiPo Battery (Tattu 3S 850mAh) & 75.0 & 0.010 \\
+Motor (SunnySky X2204 KV2300) & 28.0 & -0.050 \\
+Avionics \& Payload Release Electronics & 124.0 & 0.050 -- 0.090 \\
+\midrule
+\textbf{Total Gross Weight} & \textbf{514.0} & \textbf{0.073 (24.2\% MAC)} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Final Aerodynamic and Stability Verification}
+Aerodynamic and static longitudinal stability verification was conducted using AVL and XFLR5 computational toolsets. The selected Selig S1223 high-lift airfoil yields a maximum lift coefficient ($C_{L,max} = 2.2314$) under low Reynolds number conditions ($Re = 200,000$).
+
+Linear vortex-lattice modeling confirms a stable pitching moment slope ($C_{m,\alpha} < 0$) with the neutral point located at $33\%\text{ MAC}$. Operating at the design Center of Gravity location ($24.2\%\text{ MAC}$) ensures a positive static margin of approximately $8.8\%$, guaranteeing longitudinal static stability across the mission flight envelope.
+
+
+\section{Electrical and Avionics Design}
+\subsection{Components Inventory}
+% جدول المكونات الكهربائية
+\begin{table}[h!]
+\centering
+\caption{PADA Electrical Components Inventory}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Component} & \textbf{Specs / Rating} & \textbf{Price} & \textbf{Weight (g)} & \textbf{Selected Model} \\
+\midrule
+Battery & & & & \\
+ESC & & & & \\
+Motor & & & & \\
+Flight Controller & & & & \\
+Receiver & & & & \\
+GPS & & & & \\
+Telemetry & & & & \\
+Servos & & & & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Master Electrical Schematic Diagram}
+% مخطط التوصيلات الكهربائية Master Schematic
+Detail the wiring, signal routing, and power distribution schema.
+
+
+\section{Autonomous System and Software}
+\subsection{MAVROS and ArduPilot SITL Integration}
+% إعدادات MAVROS و ArduPilot
+Explain software setup, MAVROS nodes, and SITL simulation loop.
+
+\subsection{Visual Perception for Autonomous Mission Adaptation}
+% خوارزميات الرؤية الحاسوبية
+Detail computer vision pipelines, detection models, and precision target tracking.
+
+\subsection{Mode-Switching Logic and Path Planning}
+% استراتيجيات التوجيه والتنقل بين الأوضاع
+Explain flight mode transition state machines and path-planning algorithms.
+
+
+\section{Payload Release Mechanism}
+\subsection{Mechanical Design and Triggering Logic}
+% تصميم آلية الإسقاط والتحكم بها
+Describe external payload release mechanism, servo actuators, and release logic.
+
+
+\subsection{Material Selection}
+
+\subsubsection{Introduction}
+This trade study evaluates five candidate materials for the primary structural components of a radio-controlled (RC) plane \cite{1}. The materials are graded on a scale of $+1$ (Good), $0$ (Acceptable/Neutral), and $-1$ (Poor) across three criteria: Viability (performance and suitability), Price (cost-effectiveness), and Manufacturability (ease of building and shaping) \cite{1}.
+
+\subsubsection{Trade Study Matrix}
+The detailed comparison matrix and evaluation scores for all candidate materials are summarized in Table~\ref{tab:material_trade_matrix} \cite{1}.
+
+\begin{table}[h!]
+\centering
+\caption{Grading Matrix for RC Plane Materials}
+\label{tab:material_trade_matrix}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Material} & \textbf{Viability} & \textbf{Price} & \textbf{Manufacturability} & \textbf{Total Score} \\
+\midrule
+Balsa Wood & +1 & +1 & +1 & \textbf{+3} \\
+Foam (EPP/Depron) & 0 & +1 & +1 & \textbf{+2} \\
+3D-Printed (LW-PLA) & 0 & 0 & 0 & \textbf{0} \\
+Plywood (Lite/Birch) & 0 & 0 & -1 & \textbf{-1} \\
+Carbon Fiber & +1 & -1 & -1 & \textbf{-1} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Detailed Evaluation}
+\begin{itemize}
+    \item \textbf{Balsa Wood (+3):} The traditional gold standard for model aircraft \cite{1}. It offers an excellent strength-to-weight ratio, is relatively inexpensive, and is exceptionally easy to cut, sand, and glue \cite{1}. It provides the best balance of all criteria \cite{1}.
+    \item \textbf{Foam (+2):} A highly cost-effective and easy-to-work-with alternative \cite{1}. It is excellent for crash resistance and rapid prototyping, though it often requires structural reinforcement (like carbon rods) to achieve sufficient rigidity for flight \cite{1}.
+    \item \textbf{3D-Printed (+0):} Offers incredible design freedom for complex parts using lightweight filaments like LW-PLA \cite{1}. However, it is a slow manufacturing process, requires a high initial printer investment, and produces more brittle parts compared to traditional materials \cite{1}.
+    \item \textbf{Plywood (-1):} While stronger and stiffer than balsa, plywood is significantly heavier \cite{1}. It is best used sparingly for high-stress areas like firewalls rather than a full airframe \cite{1}. It is also harder to cut and shape \cite{1}.
+    \item \textbf{Carbon Fiber (-1):} The highest-performance material, offering unmatched strength and stiffness \cite{1}. However, it is extremely expensive and difficult to manufacture safely, requiring specialized tools and protective equipment due to hazardous dust \cite{1}.
+\end{itemize}
+
+\section{Final Assessment and Bonus Work}
+\subsection{Flight Simulation and Performance Validation}
+% نتائج محاكاة الطيران والتقييم النهائي
+Present flight test simulation logs and performance evaluation against requirements.
+
+\subsection{Bonus Features Implementation}
+% الأعمال الإضافية والمميزات الخاصة
+Document additional innovative features or bonus system implementations.
+
+
+\section*{References}
+% المراجع
+\begin{enumerate}
+    \item Gudmundsson, S. \textit{General Aviation Aircraft Design: Applied Methods and Procedures}.
+\end{enumerate}
+
+\end{document}
